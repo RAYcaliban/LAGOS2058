@@ -7,6 +7,8 @@ import { EPOScoresTable } from '@/components/dashboard/EPOScoresTable'
 import { ActionHistory } from '@/components/dashboard/ActionHistory'
 import { PollResults } from '@/components/dashboard/PollResults'
 import { ScandalHistory } from '@/components/dashboard/ScandalHistory'
+import { CharacterCard } from '@/components/dashboard/CharacterCard'
+import { NoPartyPrompt } from '@/components/dashboard/NoPartyPrompt'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -16,12 +18,27 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('*, parties(*)')
+    .select('*, parties!profiles_party_id_fkey(*)')
     .eq('id', user.id)
     .single()
 
   if (!profile) redirect('/login')
-  if (!profile.party_id) redirect('/party/register')
+  if (!profile.character_name) redirect('/character/create')
+
+  // No party — show character card + no-party prompt instead of redirecting
+  if (!profile.party_id) {
+    return (
+      <FixedWidthContainer className="py-6 space-y-6">
+        <CharacterCard
+          characterName={profile.character_name}
+          ethnicity={profile.ethnicity}
+          religion={profile.religion}
+          bio={profile.bio}
+        />
+        <NoPartyPrompt />
+      </FixedWidthContainer>
+    )
+  }
 
   // Get latest game state
   const { data: gameState } = await supabase

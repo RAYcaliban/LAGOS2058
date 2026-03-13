@@ -6,12 +6,13 @@ import { useAuth } from '@/lib/hooks/useAuth'
 
 interface AuthGuardProps {
   children: ReactNode
+  requireCharacter?: boolean
   requireParty?: boolean
   requireGM?: boolean
 }
 
-export function AuthGuard({ children, requireParty = false, requireGM = false }: AuthGuardProps) {
-  const { user, profile, loading, isGM, hasParty } = useAuth()
+export function AuthGuard({ children, requireCharacter = false, requireParty = false, requireGM = false }: AuthGuardProps) {
+  const { user, profile, loading, isGM, hasParty, hasCharacter } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
@@ -32,11 +33,16 @@ export function AuthGuard({ children, requireParty = false, requireGM = false }:
       return
     }
 
-    if (requireParty && !hasParty) {
-      router.push('/party/register')
+    if (requireCharacter && !hasCharacter) {
+      router.push('/character/create')
       return
     }
-  }, [user, profile, loading, isGM, hasParty, requireParty, requireGM, router])
+
+    if (requireParty && !hasParty) {
+      router.push('/party')
+      return
+    }
+  }, [user, profile, loading, isGM, hasParty, hasCharacter, requireParty, requireCharacter, requireGM, router])
 
   if (loading) {
     return (
@@ -49,7 +55,7 @@ export function AuthGuard({ children, requireParty = false, requireGM = false }:
     )
   }
 
-  if (!user || (requireGM && !isGM) || (requireParty && !hasParty)) {
+  if (!user || (requireGM && !isGM) || (requireCharacter && !hasCharacter) || (requireParty && !hasParty)) {
     return null
   }
 

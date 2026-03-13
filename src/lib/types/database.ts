@@ -208,8 +208,9 @@ export type Database = {
           ethnicity: string | null
           full_name: string
           id: string
-          leader_name: string
+          leader_name: string | null
           name: string
+          owner_id: string | null
           religion: string | null
         }
         Insert: {
@@ -218,8 +219,9 @@ export type Database = {
           ethnicity?: string | null
           full_name: string
           id?: string
-          leader_name: string
+          leader_name?: string | null
           name: string
+          owner_id?: string | null
           religion?: string | null
         }
         Update: {
@@ -228,8 +230,9 @@ export type Database = {
           ethnicity?: string | null
           full_name?: string
           id?: string
-          leader_name?: string
+          leader_name?: string | null
           name?: string
+          owner_id?: string | null
           religion?: string | null
         }
         Relationships: []
@@ -299,29 +302,41 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          character_name: string | null
           created_at: string
           display_name: string
           email: string
+          ethnicity: string | null
           id: string
           party_id: string | null
+          religion: string | null
           role: string
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          character_name?: string | null
           created_at?: string
           display_name: string
           email: string
+          ethnicity?: string | null
           id: string
           party_id?: string | null
+          religion?: string | null
           role?: string
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          character_name?: string | null
           created_at?: string
           display_name?: string
           email?: string
+          ethnicity?: string | null
           id?: string
           party_id?: string | null
+          religion?: string | null
           role?: string
         }
         Relationships: [
@@ -391,6 +406,7 @@ export type Database = {
     }
     Functions: {
       is_gm_or_admin: { Args: never; Returns: boolean }
+      is_party_owner: { Args: never; Returns: boolean }
       my_party_id: { Args: never; Returns: string }
     }
     Enums: {

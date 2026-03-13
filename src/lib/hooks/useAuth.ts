@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
@@ -11,32 +11,37 @@ interface Profile {
   party_id: string | null
   role: string
   avatar_url: string | null
+  character_name: string | null
+  ethnicity: string | null
+  religion: string | null
+  bio: string | null
 }
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   const fetchProfile = useCallback(async (userId: string) => {
-    const { data } = await supabase
+    const { data } = await supabaseRef.current
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single()
     setProfile(data)
-  }, [supabase])
+  }, [])
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user)
-      if (user) fetchProfile(user.id)
+    const supabase = supabaseRef.current
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      if (currentUser) fetchProfile(currentUser.id)
       setLoading(false)
     })
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         const currentUser = session?.user ?? null
@@ -51,13 +56,13 @@ export function useAuth() {
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase, fetchProfile])
+  }, [fetchProfile])
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut()
+    await supabaseRef.current.auth.signOut()
     setUser(null)
     setProfile(null)
-  }, [supabase])
+  }, [])
 
   return {
     user,
@@ -66,5 +71,6 @@ export function useAuth() {
     signOut,
     isGM: profile?.role === 'gm' || profile?.role === 'admin',
     hasParty: !!profile?.party_id,
+    hasCharacter: !!profile?.character_name,
   }
 }

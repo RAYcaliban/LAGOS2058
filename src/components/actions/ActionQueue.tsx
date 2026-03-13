@@ -20,9 +20,10 @@ interface ActionQueueProps {
   pcAvailable: number
   submissionOpen: boolean
   onRefetch: () => void
+  readOnly?: boolean
 }
 
-export function ActionQueue({ actions, totalPCSpent, pcAvailable, submissionOpen, onRefetch }: ActionQueueProps) {
+export function ActionQueue({ actions, totalPCSpent, pcAvailable, submissionOpen, onRefetch, readOnly = false }: ActionQueueProps) {
   const [submitting, setSubmitting] = useState<string | null>(null)
 
   const drafts = actions.filter((a) => a.status === 'draft')
@@ -95,28 +96,30 @@ export function ActionQueue({ actions, totalPCSpent, pcAvailable, submissionOpen
                       </div>
                       <p className="text-xs text-text-muted truncate">{action.description}</p>
                     </div>
-                    <div className="flex items-center gap-1 ml-3">
-                      {submissionOpen && (
-                        <AeroButton
-                          variant="primary"
-                          onClick={() => submitAction(action.id)}
-                          loading={submitting === action.id}
-                          className="text-[10px] px-2 py-1"
+                    {!readOnly && (
+                      <div className="flex items-center gap-1 ml-3">
+                        {submissionOpen && (
+                          <AeroButton
+                            variant="primary"
+                            onClick={() => submitAction(action.id)}
+                            loading={submitting === action.id}
+                            className="text-[10px] px-2 py-1"
+                          >
+                            Submit
+                          </AeroButton>
+                        )}
+                        <button
+                          onClick={() => deleteAction(action.id)}
+                          className="text-danger/60 hover:text-danger p-1 text-xs"
                         >
-                          Submit
-                        </AeroButton>
-                      )}
-                      <button
-                        onClick={() => deleteAction(action.id)}
-                        className="text-danger/60 hover:text-danger p-1 text-xs"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-              {drafts.length > 1 && submissionOpen && (
+              {!readOnly && drafts.length > 1 && submissionOpen && (
                 <AeroButton
                   onClick={submitAll}
                   loading={submitting === 'all'}

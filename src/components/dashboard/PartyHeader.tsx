@@ -2,7 +2,7 @@ import { AeroPanel } from '@/components/ui/AeroPanel'
 import { CountdownTimer } from '@/components/ui/CountdownTimer'
 
 interface PartyHeaderProps {
-  party: { name: string; full_name: string; color: string; leader_name: string } | null
+  party: { name: string; full_name: string; color: string; leader_name: string | null } | null
   turn: number
   phase: string
   deadline: string | null
@@ -24,7 +24,9 @@ export function PartyHeader({ party, turn, phase, deadline, submissionOpen }: Pa
           </div>
           <div>
             <h1 className="text-xl font-bold">{party.full_name}</h1>
-            <p className="text-sm text-text-secondary">Led by {party.leader_name}</p>
+            {party.leader_name && (
+              <p className="text-sm text-text-secondary">Led by {party.leader_name}</p>
+            )}
           </div>
         </div>
 

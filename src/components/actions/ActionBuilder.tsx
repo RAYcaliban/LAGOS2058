@@ -80,9 +80,18 @@ interface ActionBuilderProps {
   pcAvailable: number
   totalPCSpent: number
   onActionCreated: () => void
+  onSave?: (action: {
+    action_type: string
+    params: Record<string, unknown>
+    target_lgas: string[]
+    target_azs: string[]
+    language: string
+    description: string
+    pc_cost: number
+  }) => Promise<void>
 }
 
-export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActionCreated }: ActionBuilderProps) {
+export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActionCreated, onSave }: ActionBuilderProps) {
   const [actionType, setActionType] = useState('')
   const [params, setParams] = useState<Record<string, unknown>>({})
   const [targetLgas, setTargetLgas] = useState<string[]>([])
@@ -119,29 +128,45 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
     setSaving(true)
     setError(null)
 
-    const supabase = createClient()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error: insertError } = await supabase.from('action_submissions').insert({
-      party_id: partyId,
-      turn,
-      action_type: actionType,
-      params,
-      target_lgas: targetLgas.length > 0 ? targetLgas : null,
-      target_azs: targetAzs.length > 0 ? targetAzs : null,
-      language,
-      pc_cost: actionCost,
-      status: 'draft',
-      description,
-    } as any)
+    try {
+      if (onSave) {
+        await onSave({
+          action_type: actionType,
+          params,
+          target_lgas: targetLgas,
+          target_azs: targetAzs,
+          language,
+          description,
+          pc_cost: actionCost,
+        })
+      } else {
+        const supabase = createClient()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: insertError } = await supabase.from('action_submissions').insert({
+          party_id: partyId,
+          turn,
+          action_type: actionType,
+          params,
+          target_lgas: targetLgas.length > 0 ? targetLgas : null,
+          target_azs: targetAzs.length > 0 ? targetAzs : null,
+          language,
+          pc_cost: actionCost,
+          status: 'draft',
+          description,
+        } as any)
 
-    if (insertError) {
-      setError(insertError.message)
-      setSaving(false)
-      return
+        if (insertError) {
+          setError(insertError.message)
+          setSaving(false)
+          return
+        }
+      }
+
+      resetForm()
+      onActionCreated()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed')
     }
-
-    resetForm()
-    onActionCreated()
     setSaving(false)
   }
 

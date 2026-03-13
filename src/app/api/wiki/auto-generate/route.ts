@@ -3,14 +3,56 @@ import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(request: Request) {
   try {
-    const { partyId, partyName, fullName, leaderName, color, ethnicity, religion } =
-      await request.json()
+    const body = await request.json()
+
+    const supabase = createAdminClient()
+
+    // Character-only wiki stub (no party yet)
+    if (body.characterOnly) {
+      const { characterName, ethnicity, religion, bio, slug } = body
+
+      if (!characterName || !slug) {
+        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+      }
+
+      const characterContent = `# ${characterName}
+
+## Biography
+
+**${characterName}** is a political figure in the LAGOS 2058 election.
+
+- **Ethnicity**: ${ethnicity || 'Not specified'}
+- **Religion**: ${religion || 'Not specified'}
+
+${bio ? `## Background\n\n${bio}` : '## Background\n\n*Character background to be developed during the campaign.*'}
+
+## Political Positions
+
+*Positions will be updated as manifesto and campaign actions are submitted.*
+`
+
+      const { error } = await supabase.from('wiki_pages').insert({
+        slug: `character-${slug}`,
+        title: characterName,
+        content: characterContent,
+        party_id: null,
+        page_type: 'character',
+      })
+
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 })
+      }
+
+      return NextResponse.json({ success: true, pages: [`character-${slug}`] })
+    }
+
+    // Party + leader wiki stubs (original flow)
+    const { partyId, partyName, fullName, leaderName, color, ethnicity, religion } = body
 
     if (!partyId || !partyName || !fullName || !leaderName) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const supabase = createAdminClient()
     const partySlug = partyName.toLowerCase().replace(/\s+/g, '-')
     const leaderSlug = leaderName.toLowerCase().replace(/\s+/g, '-')
 
