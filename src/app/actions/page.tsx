@@ -44,6 +44,26 @@ function ActionsContent() {
         pcSpent={totalPCSpent}
       />
 
+      {/* D5: Action fatigue warnings */}
+      {actions.length >= 4 && (
+        <div className="rounded border border-warning/30 bg-warning/5 px-3 py-2 text-xs text-warning">
+          You have {actions.length} actions this turn. More than 4 actions may reduce overall quality scores.
+        </div>
+      )}
+      {(() => {
+        const typeCounts = actions.reduce<Record<string, number>>((acc, a) => {
+          acc[a.action_type] = (acc[a.action_type] || 0) + 1
+          return acc
+        }, {})
+        const dupes = Object.entries(typeCounts).filter(([, c]) => c > 1)
+        if (dupes.length === 0) return null
+        return (
+          <div className="rounded border border-parchment-500/30 bg-parchment-500/5 px-3 py-2 text-xs text-parchment-500">
+            Duplicate action types this turn: {dupes.map(([t, c]) => `${t.replace(/_/g, ' ')} (x${c})`).join(', ')}
+          </div>
+        )
+      })()}
+
       {isOwner && (
         <ActionBuilder
           partyId={profile.party_id}

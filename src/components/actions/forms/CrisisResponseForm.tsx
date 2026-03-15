@@ -1,8 +1,6 @@
 'use client'
 
 import { AeroInput } from '@/components/ui/AeroInput'
-import { LGASelector } from '@/components/actions/fields/LGASelector'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -21,30 +19,20 @@ interface ActionFormProps {
 export function CrisisResponseForm({
   params,
   onParamsChange,
-  targetLgas,
-  onTargetLgasChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
   return (
     <div className="space-y-4">
+      <div className="rounded border border-aero-500/20 bg-aero-500/5 px-3 py-2 text-xs text-text-secondary">
+        National scope — crisis response applies nationally.
+      </div>
+
       <AeroInput
         label="Crisis Type"
         value={params.crisis_type ?? ''}
         onChange={(e) => onParamsChange({ ...params, crisis_type: e.target.value })}
         placeholder="Describe the crisis"
-      />
-
-      <LGASelector
-        value={targetLgas}
-        onChange={onTargetLgasChange}
-      />
-
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
       />
 
       <DescriptionEditor

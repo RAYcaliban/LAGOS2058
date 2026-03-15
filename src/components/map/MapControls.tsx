@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { type ChoroMode, type EthSubMode } from '@/lib/utils/choropleth'
 
 interface MapControlsProps {
@@ -9,6 +10,13 @@ interface MapControlsProps {
   onEthSubModeChange: (sub: EthSubMode) => void
   searchQuery: string
   onSearchChange: (q: string) => void
+  layers?: {
+    zones: boolean
+    states: boolean
+    districts: boolean
+    capitals: boolean
+  }
+  onLayerToggle?: (layer: string, value: boolean) => void
 }
 
 const MODES: { key: ChoroMode; label: string }[] = [
@@ -21,9 +29,17 @@ const MODES: { key: ChoroMode; label: string }[] = [
   { key: 'bivariate', label: 'Poverty × Edu' },
 ]
 
+const LAYER_TOGGLES = [
+  { key: 'zones', label: 'Zone Borders' },
+  { key: 'districts', label: 'District Borders' },
+  { key: 'capitals', label: 'Capitals' },
+]
+
 export function MapControls({
   mode, ethSubMode, onModeChange, onEthSubModeChange, searchQuery, onSearchChange,
+  layers, onLayerToggle,
 }: MapControlsProps) {
+  const [showLayers, setShowLayers] = useState(false)
   return (
     <div className="absolute top-3 left-14 z-[1000] w-[220px] space-y-2">
       {/* Search */}
@@ -93,6 +109,44 @@ export function MapControls({
           </div>
         )}
       </div>
+
+      {/* Layer toggles */}
+      {layers && onLayerToggle && (
+        <div
+          className="bg-[rgba(242,226,198,0.95)] border border-[rgba(180,90,20,0.22)] p-3"
+          style={{
+            clipPath: 'polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px))',
+            boxShadow: '0 2px 24px rgba(160,80,20,0.1)',
+          }}
+        >
+          <button
+            onClick={() => setShowLayers(!showLayers)}
+            className="w-full text-left text-[7px] uppercase tracking-[4px] text-[rgba(42,139,154,0.5)]"
+            style={{ fontFamily: "'Orbitron', monospace" }}
+          >
+            Layers {showLayers ? '▾' : '▸'}
+          </button>
+          {showLayers && (
+            <div className="mt-2 space-y-1">
+              {LAYER_TOGGLES.map(({ key, label }) => (
+                <label
+                  key={key}
+                  className="flex items-center gap-1.5 text-[10px] text-[rgba(44,24,16,0.45)] cursor-pointer hover:text-[#2A8B9A]"
+                >
+                  <input
+                    type="checkbox"
+                    checked={layers[key as keyof typeof layers] ?? true}
+                    onChange={(e) => onLayerToggle(key, e.target.checked)}
+                    className="w-2.5 h-2.5"
+                    style={{ accentColor: '#2A8B9A' }}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

@@ -2,7 +2,6 @@
 
 import { AeroInput } from '@/components/ui/AeroInput'
 import { AZSelector } from '@/components/actions/fields/AZSelector'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -23,8 +22,6 @@ export function EthnicMobilizationForm({
   onParamsChange,
   targetAzs,
   onTargetAzsChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
@@ -45,11 +42,9 @@ export function EthnicMobilizationForm({
         value={targetAzs}
         onChange={onTargetAzsChange}
       />
-
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
-      />
+      <p className="text-xs text-text-muted -mt-2">
+        1-3 zones = regional. Empty = national scope.
+      </p>
 
       <DescriptionEditor
         value={description}

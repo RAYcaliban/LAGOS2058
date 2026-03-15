@@ -3,7 +3,6 @@
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { AeroInput } from '@/components/ui/AeroInput'
 import { AZSelector } from '@/components/actions/fields/AZSelector'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -32,8 +31,6 @@ export function EndorsementForm({
   onParamsChange,
   targetAzs,
   onTargetAzsChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
@@ -57,11 +54,8 @@ export function EndorsementForm({
       <AZSelector
         value={targetAzs}
         onChange={onTargetAzsChange}
-      />
-
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
+        multi={false}
+        label="Target Zone"
       />
 
       <DescriptionEditor

@@ -2,7 +2,9 @@
 
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { AZSelector } from '@/components/actions/fields/AZSelector'
+import { IssueDimensionSelector } from '@/components/actions/fields/IssueDimensionSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
+import { EPO_CATEGORIES } from '@/lib/types/game'
 
 interface ActionFormProps {
   params: Record<string, any>
@@ -17,12 +19,10 @@ interface ActionFormProps {
   onDescriptionChange: (desc: string) => void
 }
 
-const CATEGORY_OPTIONS = [
-  { value: 'security', label: 'Security' },
-  { value: 'economic', label: 'Economic' },
-  { value: 'social', label: 'Social' },
-  { value: 'political', label: 'Political' },
-]
+const CATEGORY_OPTIONS = EPO_CATEGORIES.map((c) => ({
+  value: c,
+  label: c.charAt(0).toUpperCase() + c.slice(1),
+}))
 
 export function EPOIntelligenceForm({
   params,
@@ -46,11 +46,18 @@ export function EPOIntelligenceForm({
       />
 
       <AeroSelect
-        label="Category"
+        label="EPO Category"
         value={params.category ?? ''}
         onChange={(e) => onParamsChange({ ...params, category: e.target.value })}
         options={CATEGORY_OPTIONS}
         placeholder="Select intelligence category"
+      />
+
+      <IssueDimensionSelector
+        value={params.issue_dimension != null ? [params.issue_dimension] : []}
+        onChange={(dims) => onParamsChange({ ...params, issue_dimension: dims[0] ?? null })}
+        max={1}
+        label="Issue Dimension (optional)"
       />
 
       <DescriptionEditor

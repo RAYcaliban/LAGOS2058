@@ -1,7 +1,7 @@
 'use client'
 
 import { PartySelector } from '@/components/actions/fields/PartySelector'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
+import { IssueDimensionSelector } from '@/components/actions/fields/IssueDimensionSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -20,8 +20,6 @@ interface ActionFormProps {
 export function OppositionResearchForm({
   params,
   onParamsChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
@@ -36,9 +34,11 @@ export function OppositionResearchForm({
         onChange={(target_party) => onParamsChange({ ...params, target_party })}
       />
 
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
+      <IssueDimensionSelector
+        value={params.target_dimensions ?? []}
+        onChange={(target_dimensions) => onParamsChange({ ...params, target_dimensions })}
+        max={4}
+        label="Target Dimensions (up to 4)"
       />
 
       <DescriptionEditor

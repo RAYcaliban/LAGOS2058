@@ -2,7 +2,6 @@
 
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { LGASelector } from '@/components/actions/fields/LGASelector'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -29,8 +28,6 @@ export function PatronageForm({
   onParamsChange,
   targetLgas,
   onTargetLgasChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
@@ -47,11 +44,9 @@ export function PatronageForm({
         value={targetLgas}
         onChange={onTargetLgasChange}
       />
-
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
-      />
+      <p className="text-xs text-text-muted -mt-2">
+        Cost scales with the number of LGAs targeted.
+      </p>
 
       <DescriptionEditor
         value={description}

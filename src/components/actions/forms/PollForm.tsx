@@ -1,6 +1,7 @@
 'use client'
 
 import { AeroSelect } from '@/components/ui/AeroSelect'
+import { IssueDimensionSelector } from '@/components/actions/fields/IssueDimensionSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -17,11 +18,11 @@ interface ActionFormProps {
 }
 
 const POLL_TIER_OPTIONS = [
-  { value: '1', label: 'Tier 1 (1 PC) — Basic national snapshot' },
-  { value: '2', label: 'Tier 2 (2 PC) — Regional breakdown' },
+  { value: '1', label: 'Tier 1 (1 PC) — National snapshot' },
+  { value: '2', label: 'Tier 2 (2 PC) — Zonal breakdown' },
   { value: '3', label: 'Tier 3 (3 PC) — State-level data' },
-  { value: '4', label: 'Tier 4 (4 PC) — LGA sampling' },
-  { value: '5', label: 'Tier 5 (5 PC) — Comprehensive survey' },
+  { value: '4', label: 'Tier 4 (4 PC) — State fine-grained' },
+  { value: '5', label: 'Tier 5 (5 PC) — LGA-level survey' },
 ]
 
 export function PollForm({
@@ -42,6 +43,12 @@ export function PollForm({
         onChange={(e) => onParamsChange({ ...params, poll_tier: Number(e.target.value) })}
         options={POLL_TIER_OPTIONS}
         placeholder="Select poll tier"
+      />
+
+      <IssueDimensionSelector
+        value={params.issue_dimensions ?? []}
+        onChange={(issue_dimensions) => onParamsChange({ ...params, issue_dimensions })}
+        label="Filter by Issue Dimensions (optional)"
       />
 
       <DescriptionEditor

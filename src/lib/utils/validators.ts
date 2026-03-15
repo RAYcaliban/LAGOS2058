@@ -52,6 +52,8 @@ const mediaSchema = z.object({
   actionType: z.literal('media'),
   headline: z.string().min(5, 'Headline must be at least 5 characters'),
   angle: z.string().min(1, 'Angle is required'),
+  tone: z.enum(['positive', 'negative', 'contrast']),
+  target_party: z.string().optional(),
 });
 
 const endorsementSchema = z.object({
@@ -84,52 +86,49 @@ const ethnicMobilizationSchema = z.object({
 const epoEngagementSchema = z.object({
   ...commonFields,
   actionType: z.literal('epo_engagement'),
-  category: z.enum(['security', 'economic', 'social', 'political']),
-  zone: z.string().min(1, 'Zone is required'),
-  score_change: z.number().min(1).max(5),
+  category: z.enum(['economic', 'labor', 'elite', 'youth']),
+  targetAzs: z.array(z.string()).min(1, 'Target zone is required'),
 });
 
 const oppositionResearchSchema = z.object({
   ...commonFields,
   actionType: z.literal('opposition_research'),
   target_party: z.string().min(1, 'Target party is required'),
+  target_dimensions: z.array(z.number().int().min(0).max(27)).max(4).default([]),
 });
 
 const crisisResponseSchema = z.object({
   ...commonFields,
   actionType: z.literal('crisis_response'),
   crisis_type: z.string().min(1, 'Crisis type is required'),
-  targetLgas: z.array(z.string()).min(1, 'At least one target LGA is required'),
 });
 
 const manifestoSchema = z.object({
   ...commonFields,
   actionType: z.literal('manifesto'),
-  positions: z.array(
-    z.object({
-      issue: z.number(),
-      position: z.number().min(-1).max(1),
-    }),
-  ).min(1, 'At least one position is required'),
+  file_url: z.string().optional(),
+  file_name: z.string().optional(),
 });
 
 const fundraisingSchema = z.object({
   ...commonFields,
   actionType: z.literal('fundraising'),
-  source: z.enum(['domestic', 'diaspora', 'corporate']),
+  source: z.enum(['diaspora', 'business_elite', 'grassroots', 'membership']),
 });
 
 const pollSchema = z.object({
   ...commonFields,
   actionType: z.literal('poll'),
   poll_tier: z.number().int().min(1).max(5),
+  issue_dimensions: z.array(z.number().int().min(0).max(27)).default([]),
 });
 
 const epoIntelligenceSchema = z.object({
   ...commonFields,
   actionType: z.literal('epo_intelligence'),
-  zone: z.string().min(1, 'Zone is required'),
-  category: z.string().min(1, 'Category is required'),
+  category: z.enum(['economic', 'labor', 'elite', 'youth']),
+  targetAzs: z.array(z.string()).min(1, 'Target zone is required'),
+  issue_dimension: z.number().int().min(0).max(27).nullable().optional(),
 });
 
 // ---------------------------------------------------------------------------

@@ -1,15 +1,6 @@
 'use client'
 
-const ZONES = [
-  { key: 'NW', name: 'North West' },
-  { key: 'NE', name: 'North East' },
-  { key: 'NC', name: 'North Central' },
-  { key: 'SW', name: 'South West' },
-  { key: 'SE', name: 'South East' },
-  { key: 'SS', name: 'South South' },
-  { key: 'FCT', name: 'FCT' },
-  { key: 'Lagos', name: 'Lagos' },
-]
+import { ZONES } from '@/lib/constants/zones'
 
 interface AZSelectorProps {
   value: string[]
@@ -31,7 +22,9 @@ export function AZSelector({ value, onChange, multi = true, label = 'Target Zone
         >
           <option value="">Select a zone</option>
           {ZONES.map((z) => (
-            <option key={z.key} value={z.key}>{z.name}</option>
+            <option key={z.key} value={z.key}>
+              {z.key} — {z.name}
+            </option>
           ))}
         </select>
         {error && <p className="text-xs text-danger">{error}</p>}
@@ -61,6 +54,7 @@ export function AZSelector({ value, onChange, multi = true, label = 'Target Zone
                   ? 'bg-aero-500 text-white'
                   : 'bg-bg-tertiary text-text-secondary hover:bg-bg-quaternary'
               }`}
+              title={zone.name}
             >
               {zone.key}
             </button>

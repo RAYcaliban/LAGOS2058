@@ -30,6 +30,7 @@ const QUICK_LINKS = [
   { href: '/admin/actions', label: 'Review Actions', desc: 'Score & approve submissions' },
   { href: '/admin/results', label: 'Import Results', desc: 'Upload engine output' },
   { href: '/admin/announcements', label: 'Announcements', desc: 'Compose GM broadcasts' },
+  { href: '/admin/wiki', label: 'Wiki', desc: 'Approve & manage articles' },
   { href: '/admin/config', label: 'Game Config', desc: 'Key-value settings' },
   { href: '/admin/impersonate', label: 'Impersonate', desc: 'Submit actions as a party' },
 ]

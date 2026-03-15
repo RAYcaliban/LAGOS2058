@@ -25,11 +25,12 @@ interface PlayerTableProps {
   parties: Party[]
   onRoleChange: (id: string, role: string) => void
   onPartyChange: (id: string, partyId: string | null) => void
+  onClearCharacter?: (id: string) => void
 }
 
 const ROLES = ['player', 'gm', 'admin']
 
-export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange }: PlayerTableProps) {
+export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange, onClearCharacter }: PlayerTableProps) {
   const [search, setSearch] = useState('')
 
   const filtered = profiles.filter((p) => {
@@ -58,6 +59,7 @@ export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange }: 
               <th className="text-left py-2 px-2">Role</th>
               <th className="text-left py-2 px-2">Party</th>
               <th className="text-left py-2 px-2">Joined</th>
+              <th className="text-right py-2 px-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -99,6 +101,21 @@ export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange }: 
                 </td>
                 <td className="py-2 px-2 text-text-muted text-xs">
                   {new Date(p.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-2 text-right">
+                  {p.character_name && onClearCharacter && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm(`Clear character "${p.character_name}" for ${p.display_name}?`)) {
+                          onClearCharacter(p.id)
+                        }
+                      }}
+                      className="text-[10px] text-danger hover:text-danger/80 transition-colors"
+                    >
+                      Clear Character
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -5,6 +5,7 @@ import { useAdminFetch } from '@/lib/hooks/useAdminFetch'
 import { AeroPanel } from '@/components/ui/AeroPanel'
 import { PartyTable } from '@/components/admin/PartyTable'
 import { PartyEditModal } from '@/components/admin/PartyEditModal'
+import { PartyPositionsEditor } from '@/components/admin/PartyPositionsEditor'
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
 
 interface Party {
@@ -19,6 +20,7 @@ interface Party {
   ethnicity: string | null
   religion: string | null
   leader_name: string | null
+  positions?: number[] | null
 }
 
 interface Profile {
@@ -31,6 +33,7 @@ export default function AdminPartiesPage() {
   const { data: profilesData } = useAdminFetch<{ profiles: Profile[] }>('/api/admin/profiles')
   const [editParty, setEditParty] = useState<Party | null>(null)
   const [deleteParty, setDeleteParty] = useState<Party | null>(null)
+  const [positionsParty, setPositionsParty] = useState<Party | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSave(id: string, fields: Record<string, unknown>) {
@@ -69,6 +72,7 @@ export default function AdminPartiesPage() {
           parties={partiesData?.parties ?? []}
           onEdit={setEditParty}
           onDelete={setDeleteParty}
+          onSetPositions={setPositionsParty}
         />
       </AeroPanel>
 
@@ -79,6 +83,19 @@ export default function AdminPartiesPage() {
           onSave={handleSave}
           onClose={() => setEditParty(null)}
           loading={loading}
+        />
+      )}
+
+      {positionsParty && (
+        <PartyPositionsEditor
+          partyId={positionsParty.id}
+          partyName={positionsParty.name}
+          initialPositions={positionsParty.positions ?? null}
+          onSave={async (id, positions) => {
+            await handleSave(id, { positions })
+            setPositionsParty(null)
+          }}
+          onClose={() => setPositionsParty(null)}
         />
       )}
 

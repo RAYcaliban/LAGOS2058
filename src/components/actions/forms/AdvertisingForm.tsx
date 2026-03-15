@@ -24,6 +24,12 @@ const MEDIUM_OPTIONS = [
   { value: 'internet', label: 'Internet' },
 ]
 
+const MEDIUM_DESCRIPTIONS: Record<string, string> = {
+  radio: 'Strong rural reach, cost-effective',
+  tv: 'Urban focus, +1 PC cost',
+  internet: 'Youth & educated demographics',
+}
+
 const BUDGET_OPTIONS = [
   { value: '0', label: 'Standard' },
   { value: '1', label: 'Heavy (+1 PC)' },
@@ -40,15 +46,20 @@ export function AdvertisingForm({
   description,
   onDescriptionChange,
 }: ActionFormProps) {
+  const medium = params.medium ?? ''
+
   return (
     <div className="space-y-4">
       <AeroSelect
         label="Medium"
-        value={params.medium ?? ''}
+        value={medium}
         onChange={(e) => onParamsChange({ ...params, medium: e.target.value })}
         options={MEDIUM_OPTIONS}
         placeholder="Select medium"
       />
+      {medium && MEDIUM_DESCRIPTIONS[medium] && (
+        <p className="text-xs text-text-muted -mt-2">{MEDIUM_DESCRIPTIONS[medium]}</p>
+      )}
 
       <AeroSelect
         label="Budget"
@@ -61,6 +72,9 @@ export function AdvertisingForm({
         value={targetAzs}
         onChange={onTargetAzsChange}
       />
+      <p className="text-xs text-text-muted -mt-2">
+        1-3 zones = regional targeting. Empty = national (+3 PC).
+      </p>
 
       <LanguageSelector
         value={language}

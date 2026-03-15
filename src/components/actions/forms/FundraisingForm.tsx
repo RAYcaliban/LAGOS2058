@@ -18,10 +18,18 @@ interface ActionFormProps {
 }
 
 const SOURCE_OPTIONS = [
-  { value: 'domestic', label: 'Domestic' },
   { value: 'diaspora', label: 'Diaspora' },
-  { value: 'corporate', label: 'Corporate' },
+  { value: 'business_elite', label: 'Business Elite' },
+  { value: 'grassroots', label: 'Grassroots' },
+  { value: 'membership', label: 'Membership' },
 ]
+
+const SOURCE_INFO: Record<string, string> = {
+  diaspora: 'Yields ~4 PC. No significant side effects.',
+  business_elite: 'Yields ~5 PC. Increases exposure risk.',
+  grassroots: 'Yields ~3 PC. Turnout bonus in targeted areas.',
+  membership: 'Yields 2-4 PC, scales with party cohesion.',
+}
 
 export function FundraisingForm({
   params,
@@ -31,19 +39,24 @@ export function FundraisingForm({
   description,
   onDescriptionChange,
 }: ActionFormProps) {
+  const source = params.source ?? ''
+
   return (
     <div className="space-y-4">
       <div className="rounded border border-aero-500/20 bg-aero-500/5 px-3 py-2 text-xs text-text-secondary">
-        National scope. Yields PC based on GM quality score.
+        National scope. Yields PC based on source and GM quality score.
       </div>
 
       <AeroSelect
-        label="Source"
-        value={params.source ?? ''}
+        label="Funding Source"
+        value={source}
         onChange={(e) => onParamsChange({ ...params, source: e.target.value })}
         options={SOURCE_OPTIONS}
         placeholder="Select funding source"
       />
+      {source && SOURCE_INFO[source] && (
+        <p className="text-xs text-text-muted -mt-2">{SOURCE_INFO[source]}</p>
+      )}
 
       <LanguageSelector
         value={language}

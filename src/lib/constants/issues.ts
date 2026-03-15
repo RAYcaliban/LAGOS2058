@@ -5,42 +5,42 @@
  * orthogonal issue dimensions (indices 0-27). Each dimension represents a
  * policy axis on which parties stake out positions and voters hold opinions.
  *
- * Ported from the Python simulation reference.
+ * Ported from the Python engine's config.py ISSUE_NAMES.
  */
 
 // ---------------------------------------------------------------------------
-// Issue key union
+// Issue key union — matches engine config.py ISSUE_NAMES exactly
 // ---------------------------------------------------------------------------
 
 export const ISSUE_KEYS = [
-  'sharia_jurisdiction',
-  'fiscal_autonomy',
-  'security_reform',
-  'chinese_relations',
-  'bic_reform',
-  'fertility_policy',
-  'drug_policy',
-  'constitutional_structure',
-  'resource_revenue',
-  'housing',
-  'education',
-  'labor_automation',
-  'military_role',
-  'immigration',
-  'womens_rights',
-  'traditional_authority',
-  'infrastructure',
-  'land_tenure',
-  'corruption',
-  'taxation',
-  'agricultural_policy',
-  'biological_enhancement',
-  'trade_policy',
-  'environmental_regulation',
-  'media_freedom',
-  'healthcare',
-  'pada_status',
-  'energy_policy',
+  'sharia_jurisdiction',       // 0
+  'fiscal_autonomy',           // 1
+  'chinese_relations',         // 2
+  'bic_reform',                // 3
+  'ethnic_quotas',             // 4
+  'fertility_policy',          // 5
+  'constitutional_structure',  // 6
+  'resource_revenue',          // 7
+  'housing',                   // 8
+  'education',                 // 9
+  'labor_automation',          // 10
+  'military_role',             // 11
+  'immigration',               // 12
+  'language_policy',           // 13
+  'womens_rights',             // 14
+  'traditional_authority',     // 15
+  'infrastructure',            // 16
+  'land_tenure',               // 17
+  'taxation',                  // 18
+  'agricultural_policy',       // 19
+  'biological_enhancement',    // 20
+  'trade_policy',              // 21
+  'environmental_regulation',  // 22
+  'media_freedom',             // 23
+  'healthcare',                // 24
+  'pada_status',               // 25
+  'energy_policy',             // 26
+  'az_restructuring',          // 27
 ] as const;
 
 export type IssueKey = (typeof ISSUE_KEYS)[number];
@@ -56,12 +56,12 @@ export interface IssueDescriptor {
   key: IssueKey;
   /** Human-readable label. */
   label: string;
-  /** Short description of the policy axis. */
+  /** Short description of the policy axis (low ↔ high). */
   description: string;
 }
 
 // ---------------------------------------------------------------------------
-// Full issue catalogue (indices 0-27)
+// Full issue catalogue (indices 0-27, matching engine config.py)
 // ---------------------------------------------------------------------------
 
 export const ISSUES: readonly IssueDescriptor[] = [
@@ -69,197 +69,169 @@ export const ISSUES: readonly IssueDescriptor[] = [
     index: 0,
     key: 'sharia_jurisdiction',
     label: 'Sharia Jurisdiction',
-    description:
-      'Scope and application of Sharia law in northern states and federal institutions.',
+    description: 'Secular ↔ full Sharia.',
   },
   {
     index: 1,
     key: 'fiscal_autonomy',
     label: 'Fiscal Autonomy',
-    description:
-      'Degree of fiscal independence for states and LGAs versus federal redistribution.',
+    description: 'Centralism ↔ confederalism.',
   },
   {
     index: 2,
-    key: 'security_reform',
-    label: 'Security Reform',
-    description:
-      'Restructuring of federal and state security apparatus, including police decentralisation.',
+    key: 'chinese_relations',
+    label: 'Chinese Relations',
+    description: 'Western pivot ↔ deepen WAFTA.',
   },
   {
     index: 3,
-    key: 'chinese_relations',
-    label: 'Chinese Relations',
-    description:
-      'Diplomatic and economic orientation toward the People\'s Republic of China and Belt-Road successors.',
+    key: 'bic_reform',
+    label: 'BIC Reform',
+    description: 'Abolish ↔ preserve BIC.',
   },
   {
     index: 4,
-    key: 'bic_reform',
-    label: 'BIC Reform',
-    description:
-      'Reform of the Basic Income Credit system — universality, amount, and conditionality.',
+    key: 'ethnic_quotas',
+    label: 'Ethnic Quotas',
+    description: 'Meritocracy ↔ affirmative action.',
   },
   {
     index: 5,
     key: 'fertility_policy',
-    label: 'Fertility Policy / Ethnic Quotas',
-    description:
-      'Government stance on fertility incentives, family planning, and ethnic quota systems.',
+    label: 'Fertility Policy',
+    description: 'Population control ↔ pro-natalism.',
   },
   {
     index: 6,
-    key: 'drug_policy',
-    label: 'Drug Policy',
-    description:
-      'Legalisation, decriminalisation, or criminalisation of controlled substances.',
+    key: 'constitutional_structure',
+    label: 'Constitutional Structure',
+    description: 'Parliamentary ↔ presidential.',
   },
   {
     index: 7,
-    key: 'constitutional_structure',
-    label: 'Constitutional Structure',
-    description:
-      'Federal vs. confederal vs. unitary constitutional arrangements.',
+    key: 'resource_revenue',
+    label: 'Resource Revenue',
+    description: 'Federal monopoly ↔ local control.',
   },
   {
     index: 8,
-    key: 'resource_revenue',
-    label: 'Resource Revenue',
-    description:
-      'Distribution and management of oil, gas, and mineral resource revenues.',
+    key: 'housing',
+    label: 'Housing',
+    description: 'Pure market ↔ state intervention.',
   },
   {
     index: 9,
-    key: 'housing',
-    label: 'Housing',
-    description:
-      'Affordable housing policy, urban planning, and slum upgrading programmes.',
+    key: 'education',
+    label: 'Education',
+    description: 'Radical localism ↔ meritocratic centralism.',
   },
   {
     index: 10,
-    key: 'education',
-    label: 'Education',
-    description:
-      'Education system reform, curriculum modernisation, and funding allocation.',
+    key: 'labor_automation',
+    label: 'Labour & Automation',
+    description: 'Pro-capital ↔ pro-labor.',
   },
   {
     index: 11,
-    key: 'labor_automation',
-    label: 'Labour & Automation',
-    description:
-      'Labour market regulation, automation displacement, and retraining programmes.',
+    key: 'military_role',
+    label: 'Military Role',
+    description: 'Civilian control ↔ military guardianship.',
   },
   {
     index: 12,
-    key: 'military_role',
-    label: 'Military Role',
-    description:
-      'Role of the military in domestic security, politics, and economic enterprises.',
+    key: 'immigration',
+    label: 'Immigration',
+    description: 'Open borders ↔ restrictionism.',
   },
   {
     index: 13,
-    key: 'immigration',
-    label: 'Immigration',
-    description:
-      'Immigration policy, border control, and treatment of ECOWAS free-movement provisions.',
+    key: 'language_policy',
+    label: 'Language Policy',
+    description: 'Vernacular ↔ English supremacy.',
   },
   {
     index: 14,
     key: 'womens_rights',
-    label: "Women's Rights / Language Policy",
-    description:
-      "Women's rights, gender equality legislation, and official language policy.",
+    label: "Women's Rights",
+    description: 'Traditional patriarchy ↔ aggressive feminism.',
   },
   {
     index: 15,
     key: 'traditional_authority',
     label: 'Traditional Authority',
-    description:
-      'Status and powers of traditional rulers, emirs, and obas in modern governance.',
+    description: 'Marginalisation ↔ formal integration.',
   },
   {
     index: 16,
     key: 'infrastructure',
     label: 'Infrastructure',
-    description:
-      'Major infrastructure investment priorities — transport, power, telecoms.',
+    description: 'Targeted ↔ universal provision.',
   },
   {
     index: 17,
     key: 'land_tenure',
     label: 'Land Tenure',
-    description:
-      'Land use reform, Land Use Act revision, and property rights modernisation.',
+    description: 'Customary ↔ formalisation.',
   },
   {
     index: 18,
-    key: 'corruption',
-    label: 'Corruption',
-    description:
-      'Anti-corruption enforcement, transparency mechanisms, and institutional reform.',
+    key: 'taxation',
+    label: 'Taxation',
+    description: 'Low tax ↔ high redistribution.',
   },
   {
     index: 19,
-    key: 'taxation',
-    label: 'Taxation',
-    description:
-      'Tax policy reform, VAT distribution, and progressive vs. flat tax debates.',
+    key: 'agricultural_policy',
+    label: 'Agricultural Policy',
+    description: 'Free market ↔ protectionist smallholder.',
   },
   {
     index: 20,
-    key: 'agricultural_policy',
-    label: 'Agricultural Policy',
-    description:
-      'Agricultural modernisation, subsidy programmes, and food security strategy.',
+    key: 'biological_enhancement',
+    label: 'Biological Enhancement',
+    description: 'Prohibition ↔ universal access.',
   },
   {
     index: 21,
-    key: 'biological_enhancement',
-    label: 'Biological Enhancement',
-    description:
-      'Regulation of genetic modification, bioaugmentation, and human enhancement technologies.',
+    key: 'trade_policy',
+    label: 'Trade Policy',
+    description: 'Autarky ↔ full openness.',
   },
   {
     index: 22,
-    key: 'trade_policy',
-    label: 'Trade Policy',
-    description:
-      'Trade liberalisation vs. protectionism, AfCFTA compliance, and tariff regimes.',
+    key: 'environmental_regulation',
+    label: 'Environmental Regulation',
+    description: 'Growth first ↔ strong regulation.',
   },
   {
     index: 23,
-    key: 'environmental_regulation',
-    label: 'Environmental Regulation',
-    description:
-      'Environmental protections, climate adaptation, and pollution control.',
+    key: 'media_freedom',
+    label: 'Media Freedom',
+    description: 'State control ↔ full press freedom.',
   },
   {
     index: 24,
-    key: 'media_freedom',
-    label: 'Media Freedom',
-    description:
-      'Press freedom, digital rights, surveillance regulation, and censorship.',
+    key: 'healthcare',
+    label: 'Healthcare',
+    description: 'Pure market ↔ universal provision.',
   },
   {
     index: 25,
-    key: 'healthcare',
-    label: 'Healthcare',
-    description:
-      'Healthcare system reform, universal coverage, and pharmaceutical regulation.',
+    key: 'pada_status',
+    label: 'PADA Status',
+    description: 'Anti-Pada ↔ Pada preservation.',
   },
   {
     index: 26,
-    key: 'pada_status',
-    label: 'PADA Status',
-    description:
-      'Status and reform of the Pan-African Development Authority and its programmes.',
+    key: 'energy_policy',
+    label: 'Energy Policy',
+    description: 'Fossil status quo ↔ green transition.',
   },
   {
     index: 27,
-    key: 'energy_policy',
-    label: 'Energy Policy / AZ Restructuring',
-    description:
-      'Energy transition strategy and Availability Zone administrative restructuring.',
+    key: 'az_restructuring',
+    label: 'AZ Restructuring',
+    description: 'Return to 36+ states ↔ keep 8 AZs.',
   },
 ] as const;
 
@@ -278,10 +250,11 @@ export const ISSUE_BY_INDEX: Record<number, IssueDescriptor> = Object.fromEntrie
 ) as Record<number, IssueDescriptor>;
 
 // ---------------------------------------------------------------------------
-// Campaign language type
+// Rhetorical styles (formerly "Campaign Languages" — these are rhetorical
+// framings, not natural languages)
 // ---------------------------------------------------------------------------
 
-export const CAMPAIGN_LANGUAGES = [
+export const RHETORICAL_STYLES = [
   'populist',
   'technocratic',
   'traditionalist',
@@ -292,45 +265,148 @@ export const CAMPAIGN_LANGUAGES = [
   'pragmatist',
 ] as const;
 
-export type CampaignLanguage = (typeof CAMPAIGN_LANGUAGES)[number];
+export type RhetoricalStyle = (typeof RHETORICAL_STYLES)[number];
 
-// ---------------------------------------------------------------------------
-// Language issue profiles
-//
-// Each campaign language emphasises a subset of the 28 issue dimensions.
-// The arrays contain the *indices* of the dimensions that language puts
-// particular weight on during campaign messaging and voter persuasion.
-// ---------------------------------------------------------------------------
+/**
+ * Each rhetorical style emphasises a subset of the 28 issue dimensions.
+ * Values are the *indices* of the dimensions that style puts particular
+ * weight on during campaign messaging and voter persuasion.
+ */
+export const RHETORICAL_STYLE_PROFILES: Record<RhetoricalStyle, readonly number[]> = {
+  populist: [3, 7, 8, 18, 19],
+  // bic_reform, resource_revenue, housing, taxation, agricultural_policy
 
-export const LANGUAGE_ISSUE_PROFILES: Record<CampaignLanguage, readonly number[]> = {
-  populist: [4, 8, 9, 18, 19],
-  // BIC reform, resource revenue, housing, corruption, taxation
+  technocratic: [2, 9, 10, 16, 20, 22, 24],
+  // chinese_relations, education, labor_automation, infrastructure,
+  // biological_enhancement, environmental_regulation, healthcare
 
-  technocratic: [2, 10, 11, 16, 21, 23, 25],
-  // security reform, education, labor/automation, infrastructure,
-  // biological enhancement, environmental regulation, healthcare
+  traditionalist: [0, 5, 6, 15, 17],
+  // sharia_jurisdiction, fertility_policy, constitutional_structure,
+  // traditional_authority, land_tenure
 
-  traditionalist: [0, 5, 7, 15, 17],
-  // sharia jurisdiction, fertility policy, constitutional structure,
-  // traditional authority, land tenure
+  progressive: [6, 14, 20, 22, 23],
+  // constitutional_structure, womens_rights, biological_enhancement,
+  // environmental_regulation, media_freedom
 
-  progressive: [6, 14, 21, 23, 24],
-  // drug policy, women's rights, biological enhancement,
-  // environmental regulation, media freedom
-
-  nationalist: [1, 3, 7, 12, 13, 22],
-  // fiscal autonomy, chinese relations, constitutional structure,
-  // military role, immigration, trade policy
+  nationalist: [1, 2, 6, 11, 12, 21],
+  // fiscal_autonomy, chinese_relations, constitutional_structure,
+  // military_role, immigration, trade_policy
 
   islamist: [0, 5, 6, 14, 15],
-  // sharia jurisdiction, fertility policy, drug policy,
-  // women's rights / language policy, traditional authority
+  // sharia_jurisdiction, fertility_policy, constitutional_structure,
+  // womens_rights, traditional_authority
 
-  pan_africanist: [3, 13, 22, 26, 27],
-  // chinese relations, immigration, trade policy,
-  // PADA status, energy policy / AZ restructuring
+  pan_africanist: [2, 12, 21, 25, 27],
+  // chinese_relations, immigration, trade_policy,
+  // pada_status, az_restructuring
 
-  pragmatist: [1, 8, 16, 18, 19, 20],
-  // fiscal autonomy, resource revenue, infrastructure,
-  // corruption, taxation, agricultural policy
+  pragmatist: [1, 7, 16, 18, 19, 20],
+  // fiscal_autonomy, resource_revenue, infrastructure,
+  // taxation, agricultural_policy, biological_enhancement
 } as const;
+
+// ---------------------------------------------------------------------------
+// Campaign languages (actual natural languages used for messaging)
+// ---------------------------------------------------------------------------
+
+export const CAMPAIGN_LANGUAGES = [
+  'english',
+  'hausa',
+  'yoruba',
+  'igbo',
+  'arabic',
+  'pidgin',
+  'mandarin',
+] as const;
+
+export type CampaignLanguage = (typeof CAMPAIGN_LANGUAGES)[number];
+
+/**
+ * Language → issue dimension emphasis weights.
+ * Ported verbatim from engine campaign_actions.py LANGUAGE_ISSUE_PROFILES.
+ * Keys are issue dimension indices (0-27), values are emphasis weights.
+ */
+export const LANGUAGE_ISSUE_EMPHASIS: Record<CampaignLanguage, Record<number, number>> = {
+  english: {
+    3: 0.15,   // bic_reform
+    4: 0.15,   // ethnic_quotas
+    7: 0.12,   // resource_revenue
+    11: 0.10,  // military_role
+    14: 0.08,  // womens_rights
+    19: 0.08,  // agricultural_policy
+    21: 0.08,  // biological_enhancement
+    22: 0.08,  // trade_policy
+    24: 0.08,  // media_freedom (actually healthcare at idx 24)
+    26: 0.08,  // energy_policy
+  },
+  hausa: {
+    0: 0.25,   // sharia_jurisdiction
+    5: 0.15,   // fertility_policy
+    10: 0.12,  // labor_automation
+    15: 0.12,  // traditional_authority
+    14: 0.10,  // womens_rights
+    13: 0.08,  // language_policy
+    27: 0.08,  // az_restructuring
+    17: 0.05,  // land_tenure
+    8: 0.05,   // housing
+  },
+  yoruba: {
+    1: 0.20,   // fiscal_autonomy
+    8: 0.15,   // housing
+    27: 0.12,  // az_restructuring
+    10: 0.10,  // labor_automation
+    26: 0.10,  // energy_policy
+    17: 0.08,  // land_tenure
+    19: 0.08,  // agricultural_policy
+    16: 0.05,  // infrastructure
+    9: 0.05,   // education
+    15: 0.07,  // traditional_authority
+  },
+  igbo: {
+    1: 0.20,   // fiscal_autonomy
+    27: 0.15,  // az_restructuring
+    8: 0.12,   // housing
+    22: 0.10,  // environmental_regulation
+    19: 0.10,  // agricultural_policy
+    4: 0.08,   // ethnic_quotas
+    16: 0.08,  // infrastructure
+    10: 0.07,  // labor_automation
+    11: 0.05,  // military_role
+    5: 0.05,   // fertility_policy
+  },
+  arabic: {
+    0: 0.35,   // sharia_jurisdiction
+    10: 0.15,  // labor_automation
+    15: 0.12,  // traditional_authority
+    14: 0.10,  // womens_rights
+    5: 0.08,   // fertility_policy
+    13: 0.05,  // language_policy
+    16: 0.05,  // infrastructure
+    12: 0.05,  // immigration
+    17: 0.05,  // land_tenure
+  },
+  pidgin: {
+    9: 0.15,   // education
+    19: 0.12,  // agricultural_policy
+    11: 0.12,  // military_role
+    25: 0.10,  // pada_status (actually healthcare at idx 24, pada at 25)
+    16: 0.10,  // infrastructure
+    26: 0.10,  // energy_policy
+    4: 0.08,   // ethnic_quotas
+    20: 0.08,  // biological_enhancement
+    13: 0.08,  // language_policy
+    17: 0.07,  // land_tenure
+  },
+  mandarin: {
+    3: 0.25,   // bic_reform (engine comment says chinese_relations)
+    22: 0.15,  // environmental_regulation
+    11: 0.12,  // military_role
+    21: 0.10,  // trade_policy
+    16: 0.10,  // infrastructure
+    10: 0.08,  // labor_automation
+    27: 0.05,  // az_restructuring
+    23: 0.05,  // media_freedom
+    14: 0.05,  // womens_rights
+    9: 0.05,   // education
+  },
+};

@@ -8,10 +8,11 @@ interface PartySelectorProps {
   value: string
   onChange: (value: string) => void
   excludePartyId?: string
+  label?: string
   error?: string
 }
 
-export function PartySelector({ value, onChange, excludePartyId, error }: PartySelectorProps) {
+export function PartySelector({ value, onChange, excludePartyId, label = 'Target Party', error }: PartySelectorProps) {
   const [parties, setParties] = useState<{ value: string; label: string }[]>([])
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export function PartySelector({ value, onChange, excludePartyId, error }: PartyS
 
   return (
     <AeroSelect
-      label="Target Party"
+      label={label}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       options={parties}

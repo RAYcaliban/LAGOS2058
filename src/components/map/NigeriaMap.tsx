@@ -8,6 +8,7 @@ import {
   type ChoroMode, type EthSubMode, type LGAProperties,
   getLGAStyle, getTooltipStat, ZONE_GLOW,
 } from '@/lib/utils/choropleth'
+import type { MapSelection } from '@/app/map/page'
 
 // --- Types ---
 
@@ -15,9 +16,10 @@ interface NigeriaMapProps {
   choroMode: ChoroMode
   ethSubMode: EthSubMode
   onSelectLGA: (properties: LGAProperties | null) => void
-  selectedLGA: string | null
+  selection: MapSelection | null
   searchQuery: string
   focusedEthGroup?: string | null
+  onZoomChange?: (zoom: number) => void
 }
 
 interface GeoData {
@@ -47,10 +49,21 @@ async function fetchGeoData(): Promise<GeoData> {
   return { lga, states, districts, zones, mask, lgaCenters, zoneCenters, capitals }
 }
 
+// --- Helpers: match predicates for each selection mode ---
+
+function lgaMatchesSel(p: LGAProperties, sel: MapSelection): boolean {
+  switch (sel.mode) {
+    case 'lga': return p.n === sel.key && p.s === sel.clickedLga.s
+    case 'district': return p.d === sel.key
+    case 'state': return p.s === sel.key
+    case 'zone': return String(p.z) === sel.key
+  }
+}
+
 // --- MapController: fly-to-search + zoom-dependent overlays ---
 
-function MapController({ searchQuery, data, isDragging }: {
-  searchQuery: string; data: GeoData; isDragging: React.MutableRefObject<boolean>
+function MapController({ searchQuery, data, isDragging, onZoomChange }: {
+  searchQuery: string; data: GeoData; isDragging: React.MutableRefObject<boolean>; onZoomChange?: (zoom: number) => void
 }) {
   const map = useMap()
   const zoneLayerRef = useRef<L.LayerGroup>(L.layerGroup())
@@ -99,22 +112,27 @@ function MapController({ searchQuery, data, isDragging }: {
       }
     }
 
-    map.on('zoomend', updateOverlays)
-    updateOverlays()
+    function handleZoom() {
+      updateOverlays()
+      onZoomChange?.(map.getZoom())
+    }
 
-    // Track drag state so LGA handlers can suppress during drag
+    map.on('zoomend', handleZoom)
+    updateOverlays()
+    onZoomChange?.(map.getZoom())
+
     const onDragStart = () => { isDragging.current = true }
     const onDragEnd = () => { setTimeout(() => { isDragging.current = false }, 50) }
     map.on('dragstart', onDragStart)
     map.on('dragend', onDragEnd)
 
     return () => {
-      map.off('zoomend', updateOverlays)
+      map.off('zoomend', handleZoom)
       map.off('dragstart', onDragStart)
       map.off('dragend', onDragEnd)
       zoneGroup.remove(); capitalGroup.remove()
     }
-  }, [map, data.zoneCenters, data.capitals, isDragging])
+  }, [map, data.zoneCenters, data.capitals, isDragging, onZoomChange])
 
   return null
 }
@@ -122,15 +140,24 @@ function MapController({ searchQuery, data, isDragging }: {
 // --- NigeriaMap ---
 
 export default function NigeriaMap({
-  choroMode, ethSubMode, onSelectLGA, selectedLGA, searchQuery, focusedEthGroup,
+  choroMode, ethSubMode, onSelectLGA, selection, searchQuery, focusedEthGroup, onZoomChange,
 }: NigeriaMapProps) {
   const [data, setData] = useState<GeoData | null>(null)
   const [loading, setLoading] = useState(true)
   const lgaLayerRef = useRef<L.GeoJSON | null>(null)
-  const selectedRef = useRef<L.Layer | null>(null)
   const isDragging = useRef(false)
+  const hlActive = useRef(false)
+  const selectionRef = useRef<MapSelection | null>(null)
+  const hlBorderLayerRef = useRef<L.Layer | null>(null)
+  const hlBorderGroupRef = useRef<L.GeoJSON | null>(null)
+  const districtLayerRef = useRef<L.GeoJSON | null>(null)
+  const zoneLayerRef = useRef<L.GeoJSON | null>(null)
+  const stateLayerRef = useRef<L.GeoJSON | null>(null)
 
   useEffect(() => { fetchGeoData().then((d) => { setData(d); setLoading(false) }) }, [])
+
+  // Keep selection ref in sync
+  useEffect(() => { selectionRef.current = selection }, [selection])
 
   // Re-style LGA layers when mode changes
   useEffect(() => {
@@ -144,28 +171,89 @@ export default function NigeriaMap({
     })
   }, [choroMode, ethSubMode, focusedEthGroup])
 
-  // Highlight selected LGA
+  // Highlight selection: dim unmatched LGAs, brighten matched, highlight border
   useEffect(() => {
-    const layer = lgaLayerRef.current
-    if (!layer) return
-    if (selectedRef.current) {
-      const prev = selectedRef.current as L.Layer & { feature?: GeoJSON.Feature }
-      if (prev.feature) {
-        ;(selectedRef.current as L.Path).setStyle(
-          getLGAStyle(prev.feature.properties as LGAProperties, choroMode, ethSubMode, focusedEthGroup)
-        )
+    const lgaLayer = lgaLayerRef.current
+    if (!lgaLayer) return
+
+    // Clear previous highlight
+    if (hlActive.current) {
+      lgaLayer.eachLayer((l) => {
+        const feat = l as L.Layer & { feature?: GeoJSON.Feature }
+        if (feat.feature) {
+          ;(l as L.Path).setStyle(getLGAStyle(feat.feature.properties as LGAProperties, choroMode, ethSubMode, focusedEthGroup))
+        }
+      })
+      // Reset border layers
+      const resetBorder = (layerGroup: L.GeoJSON | null) => {
+        layerGroup?.eachLayer((l) => {
+          layerGroup.resetStyle(l)
+        })
       }
-      selectedRef.current = null
+      resetBorder(districtLayerRef.current)
+      resetBorder(zoneLayerRef.current)
+      resetBorder(stateLayerRef.current)
+      hlBorderLayerRef.current = null
+      hlBorderGroupRef.current = null
+      hlActive.current = false
     }
-    if (!selectedLGA) return
-    layer.eachLayer((l) => {
+
+    if (!selection) return
+
+    // Dim unmatched, brighten matched
+    hlActive.current = true
+    lgaLayer.eachLayer((l) => {
       const feat = l as L.Layer & { feature?: GeoJSON.Feature }
-      if (feat.feature && (feat.feature.properties as LGAProperties).n === selectedLGA) {
-        ;(l as L.Path).setStyle({ weight: 3, color: '#2C1810', fillOpacity: 0.8 })
-        selectedRef.current = l
+      if (!feat.feature) return
+      const p = feat.feature.properties as LGAProperties
+      if (lgaMatchesSel(p, selection)) {
+        const baseStyle = getLGAStyle(p, choroMode, ethSubMode, focusedEthGroup)
+        const glowColor = choroMode === 'zones' ? (ZONE_GLOW[p.z] || '#B45A14') : baseStyle.color
+        ;(l as L.Path).setStyle({
+          fillColor: baseStyle.fillColor,
+          fillOpacity: 0.65,
+          weight: 1.8,
+          color: glowColor,
+          opacity: 0.9,
+        })
+      } else {
+        ;(l as L.Path).setStyle({
+          fillOpacity: 0.03,
+          weight: 0.3,
+          color: '#C8B090',
+          opacity: 0.12,
+        })
       }
     })
-  }, [selectedLGA, choroMode, ethSubMode, focusedEthGroup])
+
+    // Highlight border for district/state/zone
+    const highlightBorder = (layerGroup: L.GeoJSON | null, pred: (f: GeoJSON.Feature) => boolean) => {
+      if (!layerGroup) return
+      layerGroup.eachLayer((l) => {
+        const feat = l as L.Layer & { feature?: GeoJSON.Feature }
+        if (feat.feature && pred(feat.feature)) {
+          ;(l as L.Path).setStyle({ weight: 4, opacity: 1, color: '#B45A14', dashArray: '' })
+          ;(l as L.Path).bringToFront()
+          hlBorderLayerRef.current = l
+          hlBorderGroupRef.current = layerGroup
+        } else {
+          ;(l as L.Path).setStyle({ opacity: 0.1 })
+        }
+      })
+    }
+
+    switch (selection.mode) {
+      case 'district':
+        highlightBorder(districtLayerRef.current, (f) => f.properties?.d === selection.key)
+        break
+      case 'state':
+        highlightBorder(stateLayerRef.current, (f) => f.properties?.n === selection.key)
+        break
+      case 'zone':
+        highlightBorder(zoneLayerRef.current, (f) => String(f.properties?.z) === selection.key)
+        break
+    }
+  }, [selection, choroMode, ethSubMode, focusedEthGroup])
 
   // Memoized style functions
   const lgaStyle = useMemo(
@@ -184,6 +272,10 @@ export default function NigeriaMap({
     fill: false, color: '#888', weight: 1, opacity: 0.4, dashArray: '4 4', interactive: false,
   }), [])
 
+  const stateStyle = useMemo(() => () => ({
+    fill: false, color: '#666', weight: 1.5, opacity: 0.3, interactive: false,
+  }), [])
+
   const zoneStyle = useMemo(() => (feature?: GeoJSON.Feature) => {
     const z = feature?.properties?.z as number | undefined
     return { fill: false, color: ZONE_GLOW[z ?? 0] || '#666', weight: 2, opacity: 0.6, interactive: false }
@@ -196,15 +288,31 @@ export default function NigeriaMap({
       layer.on({
         mouseover: () => {
           if (isDragging.current) return
-          path.setStyle({ weight: 3, color: '#2A8B9A', fillOpacity: 0.75 })
-          path.bringToFront()
-          path.bindTooltip(`<b>${p.n}</b><br/>${getTooltipStat(p, choroMode, ethSubMode)}`, {
+          const sel = selectionRef.current
+          // Only apply hover effect if no highlight active, or this LGA is in the selection
+          if (!hlActive.current || (sel && lgaMatchesSel(p, sel))) {
+            path.setStyle({ weight: 3, color: '#2A8B9A', fillOpacity: 0.75 })
+            path.bringToFront()
+          }
+          path.bindTooltip(`<b>${p.n}</b><br/>${p.s} · ${p.zn}<br/>${getTooltipStat(p, choroMode, ethSubMode)}`, {
             sticky: true, className: 'lga-tooltip',
           })
           path.openTooltip()
         },
         mouseout: () => {
-          if (selectedLGA !== p.n) path.setStyle(getLGAStyle(p, choroMode, ethSubMode, focusedEthGroup))
+          const sel = selectionRef.current
+          // Restore appropriate style based on current highlight state
+          if (hlActive.current && sel) {
+            if (lgaMatchesSel(p, sel)) {
+              const baseStyle = getLGAStyle(p, choroMode, ethSubMode, focusedEthGroup)
+              const glowColor = choroMode === 'zones' ? (ZONE_GLOW[p.z] || '#B45A14') : baseStyle.color
+              path.setStyle({ fillColor: baseStyle.fillColor, fillOpacity: 0.65, weight: 1.8, color: glowColor, opacity: 0.9 })
+            } else {
+              path.setStyle({ fillOpacity: 0.03, weight: 0.3, color: '#C8B090', opacity: 0.12 })
+            }
+          } else {
+            path.setStyle(getLGAStyle(p, choroMode, ethSubMode, focusedEthGroup))
+          }
           path.unbindTooltip()
         },
         click: () => {
@@ -213,10 +321,10 @@ export default function NigeriaMap({
         },
       })
     },
-    [choroMode, ethSubMode, selectedLGA, onSelectLGA, focusedEthGroup]
+    [choroMode, ethSubMode, onSelectLGA, focusedEthGroup]
   )
 
-  const lgaKey = `lga-${choroMode}-${ethSubMode}-${selectedLGA}-${focusedEthGroup}`
+  const lgaKey = `lga-${choroMode}-${ethSubMode}-${focusedEthGroup}`
 
   if (loading || !data) {
     return (
@@ -240,9 +348,19 @@ export default function NigeriaMap({
         <GeoJSON key={lgaKey} data={data.lga} style={lgaStyle} onEachFeature={onEachLGA}
           ref={(ref) => { lgaLayerRef.current = ref ?? null }} />
       )}
-      {data.districts && <GeoJSON data={data.districts} style={districtStyle} interactive={false} />}
-      {data.zones && <GeoJSON data={data.zones} style={zoneStyle} interactive={false} />}
-      <MapController searchQuery={searchQuery} data={data} isDragging={isDragging} />
+      {data.states && (
+        <GeoJSON data={data.states} style={stateStyle} interactive={false}
+          ref={(ref) => { stateLayerRef.current = ref ?? null }} />
+      )}
+      {data.districts && (
+        <GeoJSON data={data.districts} style={districtStyle} interactive={false}
+          ref={(ref) => { districtLayerRef.current = ref ?? null }} />
+      )}
+      {data.zones && (
+        <GeoJSON data={data.zones} style={zoneStyle} interactive={false}
+          ref={(ref) => { zoneLayerRef.current = ref ?? null }} />
+      )}
+      <MapController searchQuery={searchQuery} data={data} isDragging={isDragging} onZoomChange={onZoomChange} />
     </MapContainer>
   )
 }

@@ -20,9 +20,10 @@ interface PartyTableProps {
   parties: Party[]
   onEdit: (party: Party) => void
   onDelete: (party: Party) => void
+  onSetPositions?: (party: Party) => void
 }
 
-export function PartyTable({ parties, onEdit, onDelete }: PartyTableProps) {
+export function PartyTable({ parties, onEdit, onDelete, onSetPositions }: PartyTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -54,6 +55,11 @@ export function PartyTable({ parties, onEdit, onDelete }: PartyTableProps) {
                 {new Date(p.created_at).toLocaleDateString()}
               </td>
               <td className="py-2 px-2 text-right space-x-2">
+                {onSetPositions && (
+                  <AeroButton variant="ghost" className="text-xs !py-1 !px-2" onClick={() => onSetPositions(p)}>
+                    Positions
+                  </AeroButton>
+                )}
                 <AeroButton variant="ghost" className="text-xs !py-1 !px-2" onClick={() => onEdit(p)}>
                   Edit
                 </AeroButton>

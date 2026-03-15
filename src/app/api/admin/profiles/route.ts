@@ -16,6 +16,28 @@ export async function GET() {
   return NextResponse.json({ profiles: data })
 }
 
+export async function DELETE(request: Request) {
+  const auth = await verifyGMAccess()
+  if (auth.error) return auth.error
+
+  const { id } = await request.json()
+  if (!id) return NextResponse.json({ error: 'Profile id required' }, { status: 400 })
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('profiles')
+    .update({
+      character_name: null,
+      ethnicity: null,
+      religion: null,
+      bio: null,
+    })
+    .eq('id', id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
+}
+
 export async function PATCH(request: Request) {
   const auth = await verifyGMAccess()
   if (auth.error) return auth.error

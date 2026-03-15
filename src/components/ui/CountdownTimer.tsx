@@ -47,14 +47,17 @@ export function CountdownTimer({ deadline, className = '' }: CountdownTimerProps
     return () => clearInterval(interval)
   }, [deadline])
 
-  const isUrgent = (() => {
-    if (!deadline) return false
+  const colorClass = (() => {
+    if (!deadline) return 'text-text-muted'
     const diff = differenceInSeconds(new Date(deadline), new Date())
-    return diff > 0 && diff < 3600
+    if (diff <= 0) return 'text-text-muted'
+    if (diff < 12 * 3600) return 'text-danger animate-glow-pulse'  // < 12h = red
+    if (diff < 48 * 3600) return 'text-warning'                     // < 48h = amber
+    return 'text-success'                                            // > 48h = green
   })()
 
   return (
-    <span className={`font-mono ${isUrgent ? 'text-danger animate-glow-pulse' : 'text-aero-400'} ${className}`}>
+    <span className={`font-mono ${colorClass} ${className}`}>
       {timeLeft}
     </span>
   )

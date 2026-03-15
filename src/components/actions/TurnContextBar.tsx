@@ -8,9 +8,10 @@ interface TurnContextBarProps {
   submissionOpen: boolean
   pcAvailable: number
   pcSpent: number
+  epoDividends?: number
 }
 
-export function TurnContextBar({ turn, deadline, submissionOpen, pcAvailable, pcSpent }: TurnContextBarProps) {
+export function TurnContextBar({ turn, deadline, submissionOpen, pcAvailable, pcSpent, epoDividends = 0 }: TurnContextBarProps) {
   return (
     <div className="flex items-center justify-between flex-wrap gap-3 bg-bg-secondary border border-aero-500/10 rounded px-4 py-3">
       <div className="flex items-center gap-4">
@@ -32,6 +33,11 @@ export function TurnContextBar({ turn, deadline, submissionOpen, pcAvailable, pc
             <span className="text-aero-400 font-bold">{pcAvailable - pcSpent}</span>
             <span className="text-text-muted"> / {pcAvailable}</span>
           </div>
+          {epoDividends > 0 && (
+            <div className="text-[10px] text-success">
+              +{epoDividends} EPO dividends
+            </div>
+          )}
         </div>
         <div className={`text-xs font-semibold px-2 py-1 rounded ${
           submissionOpen

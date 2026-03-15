@@ -2,17 +2,20 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/actions', label: 'Actions' },
   { href: '/map', label: 'Map' },
+  { href: '/feed', label: 'Feed' },
   { href: '/forum', label: 'Forum' },
   { href: '/wiki', label: 'Wiki' },
 ]
 
 export function AeroNav() {
   const pathname = usePathname()
+  const { user, profile, loading, signOut } = useAuth()
 
   return (
     <nav className="sticky top-0 z-50 border-b border-aero-500/20 bg-bg-primary/90 backdrop-blur-xl">
@@ -48,14 +51,36 @@ export function AeroNav() {
             })}
           </div>
 
-          {/* Right side — placeholder for auth */}
+          {/* Right side — auth state */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
-            >
-              Login
-            </Link>
+            {loading ? (
+              <span className="text-sm text-text-muted animate-pulse">...</span>
+            ) : user && profile ? (
+              <>
+                <span className="text-sm text-text-secondary">
+                  {profile.character_name ?? profile.display_name}
+                </span>
+                {profile.party_id && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-aero-500/20 text-aero-400 font-mono uppercase tracking-wider">
+                    {/* Party abbreviation will be shown if available */}
+                    Party
+                  </span>
+                )}
+                <button
+                  onClick={signOut}
+                  className="text-sm text-text-muted hover:text-text-primary transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

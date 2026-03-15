@@ -15,17 +15,36 @@ export type GamePhase = 'submission' | 'resolution' | 'results';
 // EPO (Extra-Partisan Organisation) types
 // ---------------------------------------------------------------------------
 
-/** The four broad categories that EPOs care about. */
-export type EPOCategory = 'security' | 'economic' | 'social' | 'political';
+/** The four EPO categories (matching engine). */
+export type EPOCategory = 'economic' | 'labor' | 'elite' | 'youth';
+
+/** Ordered list of EPO categories for iteration. */
+export const EPO_CATEGORIES: readonly EPOCategory[] = [
+  'economic',
+  'labor',
+  'elite',
+  'youth',
+] as const;
 
 /**
- * EPO scores keyed by zone name, then by category.
+ * Issue dimensions (by index) that each EPO category is salient on.
+ * Used to display which policy areas matter for each EPO category.
+ */
+export const EPO_SALIENCE_DIMENSIONS: Record<EPOCategory, readonly number[]> = {
+  economic: [7, 18, 19],  // resource_revenue, taxation, agricultural_policy
+  labor: [10, 11, 8],     // labor_automation, military_role, housing
+  elite: [3, 6, 4],       // bic_reform, constitutional_structure, ethnic_quotas
+  youth: [20, 23, 21],    // biological_enhancement, media_freedom, trade_policy
+};
+
+/**
+ * EPO scores keyed by zone key (e.g. 'AZ1'), then by category.
  *
  * Example:
  * ```ts
  * const scores: EPOScores = {
- *   'lagos-island': { security: 12, economic: 8, social: 5, political: 3 },
- *   'ikeja':        { security: 6,  economic: 14, social: 9, political: 7 },
+ *   'AZ1': { economic: 8, labor: 5, elite: 3, youth: 7 },
+ *   'AZ2': { economic: 6, labor: 14, elite: 9, youth: 7 },
  * };
  * ```
  */

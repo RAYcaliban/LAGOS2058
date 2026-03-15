@@ -1,7 +1,6 @@
 import { AeroPanel } from '@/components/ui/AeroPanel'
-
-const EPO_CATEGORIES = ['security', 'economic', 'social', 'political'] as const
-const ZONES = ['NW', 'NE', 'NC', 'SW', 'SE', 'SS', 'FCT', 'Lagos'] as const
+import { AZ_KEYS, ZONE_BY_KEY } from '@/lib/constants/zones'
+import { EPO_CATEGORIES } from '@/lib/types/game'
 
 interface EPOScoresTableProps {
   epoScores: Record<string, Record<string, number>>
@@ -44,11 +43,14 @@ export function EPOScoresTable({ epoScores }: EPOScoresTableProps) {
               </tr>
             </thead>
             <tbody>
-              {ZONES.map((zone) => {
-                const zoneScores = epoScores[zone] ?? {}
+              {AZ_KEYS.map((zoneKey) => {
+                const zone = ZONE_BY_KEY[zoneKey]
+                const zoneScores = epoScores[zoneKey] ?? {}
                 return (
-                  <tr key={zone} className="border-b border-bg-tertiary/30">
-                    <td className="py-1.5 px-2 font-medium text-text-secondary">{zone}</td>
+                  <tr key={zoneKey} className="border-b border-bg-tertiary/30">
+                    <td className="py-1.5 px-2 font-medium text-text-secondary" title={zone.name}>
+                      {zoneKey}
+                    </td>
                     {EPO_CATEGORIES.map((cat) => {
                       const score = zoneScores[cat] ?? 0
                       return (

@@ -191,6 +191,13 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
             placeholder="Select an action type..."
           />
 
+          {/* D3: Manifesto turn-3 warning */}
+          {actionType === 'manifesto' && turn > 3 && (
+            <div className="rounded border border-danger/30 bg-danger/5 px-3 py-2 text-xs text-danger">
+              Warning: Manifestos submitted after Turn 3 have significantly reduced impact. Consider prioritising this action.
+            </div>
+          )}
+
           {FormComponent && (
             <FormComponent
               params={params}

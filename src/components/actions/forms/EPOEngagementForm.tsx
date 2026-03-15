@@ -1,10 +1,10 @@
 'use client'
 
 import { AeroSelect } from '@/components/ui/AeroSelect'
-import { AeroSlider } from '@/components/ui/AeroSlider'
 import { AZSelector } from '@/components/actions/fields/AZSelector'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
+import { EPO_CATEGORIES, EPO_SALIENCE_DIMENSIONS } from '@/lib/types/game'
+import { ISSUE_BY_INDEX } from '@/lib/constants/issues'
 
 interface ActionFormProps {
   params: Record<string, any>
@@ -19,53 +19,45 @@ interface ActionFormProps {
   onDescriptionChange: (desc: string) => void
 }
 
-const CATEGORY_OPTIONS = [
-  { value: 'security', label: 'Security' },
-  { value: 'economic', label: 'Economic' },
-  { value: 'social', label: 'Social' },
-  { value: 'political', label: 'Political' },
-]
+const CATEGORY_OPTIONS = EPO_CATEGORIES.map((c) => ({
+  value: c,
+  label: c.charAt(0).toUpperCase() + c.slice(1),
+}))
 
 export function EPOEngagementForm({
   params,
   onParamsChange,
   targetAzs,
   onTargetAzsChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
+  const category = params.category ?? ''
+  const salienceDims = category
+    ? EPO_SALIENCE_DIMENSIONS[category as keyof typeof EPO_SALIENCE_DIMENSIONS]
+    : null
+
   return (
     <div className="space-y-4">
       <AeroSelect
-        label="Category"
-        value={params.category ?? ''}
+        label="EPO Category"
+        value={category}
         onChange={(e) => onParamsChange({ ...params, category: e.target.value })}
         options={CATEGORY_OPTIONS}
         placeholder="Select EPO category"
       />
+
+      {salienceDims && (
+        <p className="text-xs text-text-muted -mt-2">
+          Salient issues: {salienceDims.map((idx) => ISSUE_BY_INDEX[idx]?.label ?? `#${idx}`).join(', ')}
+        </p>
+      )}
 
       <AZSelector
         value={targetAzs}
         onChange={onTargetAzsChange}
         multi={false}
         label="Target Zone"
-      />
-
-      <AeroSlider
-        label="Score Change"
-        value={params.score_change ?? 1}
-        onChange={(score_change) => onParamsChange({ ...params, score_change })}
-        min={1}
-        max={5}
-        step={0.5}
-        formatValue={(v) => v.toFixed(1)}
-      />
-
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
       />
 
       <DescriptionEditor
