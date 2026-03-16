@@ -205,10 +205,12 @@ export type Database = {
         Row: {
           color: string
           created_at: string
+          description: string | null
           ethnicity: string | null
           full_name: string
           id: string
           leader_name: string | null
+          logo_url: string | null
           name: string
           owner_id: string | null
           religion: string | null
@@ -216,10 +218,12 @@ export type Database = {
         Insert: {
           color: string
           created_at?: string
+          description?: string | null
           ethnicity?: string | null
           full_name: string
           id?: string
           leader_name?: string | null
+          logo_url?: string | null
           name: string
           owner_id?: string | null
           religion?: string | null
@@ -227,10 +231,12 @@ export type Database = {
         Update: {
           color?: string
           created_at?: string
+          description?: string | null
           ethnicity?: string | null
           full_name?: string
           id?: string
           leader_name?: string | null
+          logo_url?: string | null
           name?: string
           owner_id?: string | null
           religion?: string | null
