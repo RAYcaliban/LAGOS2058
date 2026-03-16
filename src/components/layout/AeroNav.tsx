@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { useGameConfig } from '@/lib/hooks/useGameConfig'
 
-const NAV_ITEMS = [
+const BASE_NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard' },
-  { href: '/actions', label: 'Actions' },
+  { href: '/actions', label: 'Actions', configKey: 'actions_tab_visible' },
   { href: '/map', label: 'Map' },
   { href: '/feed', label: 'Feed' },
   { href: '/forum', label: 'Forum' },
@@ -16,6 +17,14 @@ const NAV_ITEMS = [
 export function AeroNav() {
   const pathname = usePathname()
   const { user, profile, loading, signOut } = useAuth()
+  const { value: actionsVisible } = useGameConfig('actions_tab_visible')
+
+  const navItems = BASE_NAV_ITEMS.filter((item) => {
+    if (item.configKey === 'actions_tab_visible') {
+      return actionsVisible === true
+    }
+    return true
+  })
 
   return (
     <nav className="sticky top-0 z-50 border-b border-aero-500/20 bg-bg-primary/90 backdrop-blur-xl">
@@ -33,7 +42,7 @@ export function AeroNav() {
 
           {/* Navigation links */}
           <div className="hidden sm:flex items-center gap-1">
-            {NAV_ITEMS.map(({ href, label }) => {
+            {navItems.map(({ href, label }) => {
               const isActive = pathname?.startsWith(href)
               return (
                 <Link
