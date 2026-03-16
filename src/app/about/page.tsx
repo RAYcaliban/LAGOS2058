@@ -530,12 +530,12 @@ export default function AboutPage() {
                   {ev.isFirstOfYear && (
                     <span
                       className="absolute font-mono text-[9px] tracking-widest select-none transition-colors"
-                    style={{ color: ev.year === activeYear(active) ? '#008751' : 'rgba(42,139,154,0.35)' }}
-                      style={{
-                        top: '6px',
-                        left: `${x}px`,
-                        transform: 'translateX(-50%)',
-                        whiteSpace: 'nowrap',
+                    style={{ 
+                      color: ev.year === activeYear(active) ? '#008751' : 'rgba(42,139,154,0.35)',
+                      top: '6px',
+                      left: `${x}px`,
+                      transform: 'translateX(-50%)',
+                      whiteSpace: 'nowrap',
                       }}
                     >
                       {ev.year}
