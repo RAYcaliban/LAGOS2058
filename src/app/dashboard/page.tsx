@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { FixedWidthContainer } from '@/components/layout/FixedWidthContainer'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { PartyHeader } from '@/components/dashboard/PartyHeader'
 import { StatsGrid } from '@/components/dashboard/StatsGrid'
 import { EPOScoresTable } from '@/components/dashboard/EPOScoresTable'
@@ -28,15 +29,24 @@ export default async function DashboardPage() {
   // No party — show character card + no-party prompt instead of redirecting
   if (!profile.party_id) {
     return (
-      <FixedWidthContainer className="py-6 space-y-6">
-        <CharacterCard
-          characterName={profile.character_name}
-          ethnicity={profile.ethnicity}
-          religion={profile.religion}
-          bio={profile.bio}
+      <>
+        <PageHeader
+          title="DASHBOARD"
+          label="Campaign HQ"
+          image="/images/afrofuture.jpg"
+          wash="teal"
+          subtitle="Your command centre. Join or create a party to begin campaigning."
         />
-        <NoPartyPrompt />
-      </FixedWidthContainer>
+        <FixedWidthContainer className="py-6 space-y-6">
+          <CharacterCard
+            characterName={profile.character_name}
+            ethnicity={profile.ethnicity}
+            religion={profile.religion}
+            bio={profile.bio}
+          />
+          <NoPartyPrompt />
+        </FixedWidthContainer>
+      </>
     )
   }
 
@@ -65,6 +75,14 @@ export default async function DashboardPage() {
     .single()
 
   return (
+    <>
+      <PageHeader
+        title="DASHBOARD"
+        label="Campaign HQ"
+        image="/images/afrofuture.jpg"
+        wash="teal"
+        subtitle={`Turn ${currentTurn} · ${gameState?.phase ?? 'submission'} phase`}
+      />
     <FixedWidthContainer className="py-6 space-y-6">
       <PartyHeader
         party={party}
@@ -86,5 +104,6 @@ export default async function DashboardPage() {
         <ScandalHistory scandalHistory={(partyState?.scandal_history ?? []) as Record<string, unknown>[]} />
       </div>
     </FixedWidthContainer>
+    </>
   )
 }

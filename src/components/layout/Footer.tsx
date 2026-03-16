@@ -1,10 +1,18 @@
 export function Footer() {
   return (
-    <footer className="border-t border-aero-500/10 mt-auto">
+    <footer className="border-t border-aero-500/30 mt-auto bg-bg-secondary/50">
+      <div className="glow-line" />
       <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p className="text-xs text-text-muted tracking-wider">
-          LAGOS 2058 &mdash; A Political Campaign Simulation
-        </p>
+        <div className="flex flex-col items-center sm:items-start gap-1">
+          <div className="flex items-center gap-2">
+            <span className="pixel-brand text-base text-white">LAGOS</span>
+            <span className="pixel-brand text-sm" style={{ color: '#008751' }}>2058</span>
+            <span className="nigeria-stars pixel-brand text-sm">★★★</span>
+          </div>
+          <p className="text-[10px] text-text-muted tracking-wider uppercase">
+            Federal Republic of Nigeria &middot; A Political Campaign Simulation
+          </p>
+        </div>
         <div className="flex items-center gap-4">
           <a
             href="https://discord.gg/lagos2058"

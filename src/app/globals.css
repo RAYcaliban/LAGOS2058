@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -260,6 +260,76 @@
   }
   .map-tooltip::before {
     border-top-color: rgba(42, 139, 154, 0.3) !important;
+  }
+
+  /* Nigeria-green register/ghost button */
+  .register-button-nigeria {
+    @apply px-8 py-3 font-semibold text-base tracking-wider uppercase transition-all duration-200 text-white;
+    background: transparent;
+    border: 2px solid #008751;
+    clip-path: polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px));
+  }
+  .register-button-nigeria:hover {
+    background: rgba(0,135,81,0.2);
+  }
+
+  /* Pixel brand — VT323 dot-matrix style for LAGOS 2058 title */
+  .pixel-brand {
+    font-family: 'VT323', monospace;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  /* Nigeria stars motif */
+  .nigeria-stars {
+    color: #008751;
+    letter-spacing: 0.4em;
+    font-size: 0.6em;
+  }
+
+  /* Poster section — full-bleed image background with color wash */
+  .poster-section {
+    @apply relative overflow-hidden;
+  }
+  .poster-section > .poster-bg {
+    @apply absolute inset-0 bg-cover bg-center;
+  }
+  .poster-section > .poster-overlay {
+    @apply absolute inset-0;
+  }
+  .poster-section > .poster-content {
+    @apply relative z-10;
+  }
+
+  /* Color wash overlays — mix-blend-mode for BLiP-style photo tinting */
+  .color-wash-green {
+    background: rgba(0, 135, 81, 0.65);
+    mix-blend-mode: multiply;
+  }
+  .color-wash-teal {
+    background: rgba(42, 139, 154, 0.6);
+    mix-blend-mode: multiply;
+  }
+  .color-wash-amber {
+    background: rgba(120, 60, 0, 0.6);
+    mix-blend-mode: multiply;
+  }
+  .color-wash-dark {
+    background: linear-gradient(to bottom, rgba(10, 15, 20, 0.5) 0%, rgba(10, 15, 20, 0.85) 100%);
+  }
+
+  /* Classified/archival stamp aesthetic */
+  .classified-stamp {
+    @apply inline-block font-mono text-xs uppercase tracking-[6px] font-bold;
+    color: rgba(239, 68, 68, 0.7);
+    border: 2px solid rgba(239, 68, 68, 0.5);
+    padding: 2px 8px;
+    transform: rotate(-2deg);
+  }
+
+  /* Strengthen aero-panel slightly */
+  .aero-panel {
+    border-color: rgba(42, 139, 154, 0.25);
   }
 
   /* Forum Nairaland style */

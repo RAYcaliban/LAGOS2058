@@ -1,42 +1,38 @@
-import { FixedWidthContainer } from '@/components/layout/FixedWidthContainer'
-
 interface ComingSoonOverlayProps {
   title: string
+  subtitle?: string
+  image?: string
 }
 
-export function ComingSoonOverlay({ title }: ComingSoonOverlayProps) {
+export function ComingSoonOverlay({ title, subtitle, image }: ComingSoonOverlayProps) {
   return (
-    <div className="relative min-h-[calc(100vh-120px)]">
-      {/* Grayed-out background */}
-      <div className="absolute inset-0 bg-bg-primary/80 backdrop-blur-sm z-10" />
+    <div className="poster-section min-h-[calc(100vh-4rem)] flex items-center justify-center">
+      {image ? (
+        <div className="poster-bg" style={{ backgroundImage: `url('${image}')` }} />
+      ) : (
+        <div className="poster-bg" style={{ background: 'linear-gradient(135deg, #0a0f14 0%, #111922 100%)' }} />
+      )}
+      <div className="poster-overlay" style={{ background: 'rgba(10,15,20,0.85)' }} />
 
-      {/* Coming Soon badge */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="font-display text-3xl md:text-4xl font-bold tracking-[6px] text-aero-500/40">
-            {title}
-          </h1>
-          <div className="glow-line max-w-xs mx-auto opacity-30" />
-          <div className="inline-block border border-aero-500/20 bg-bg-secondary/90 rounded px-6 py-3">
-            <span className="font-display text-sm tracking-[4px] uppercase text-aero-400">
-              Coming Soon
-            </span>
-          </div>
+      <div className="poster-content text-center px-6">
+        <p className="font-mono text-nigeria-500/70 text-xs tracking-[8px] uppercase mb-6">
+          ▶ FIFTH REPUBLIC · LAGOS 2058
+        </p>
+        <h1 className="pixel-brand text-6xl md:text-8xl text-white leading-none mb-6">
+          {title}
+        </h1>
+        <div className="glow-line max-w-xs mx-auto mb-8" />
+        <div className="inline-block border border-aero-500/30 bg-bg-secondary/80 px-8 py-4">
+          <span className="pixel-brand text-xl text-aero-400 tracking-widest">
+            COMING SOON
+          </span>
         </div>
+        {subtitle && (
+          <p className="text-white/40 text-sm mt-6 max-w-md mx-auto leading-relaxed">
+            {subtitle}
+          </p>
+        )}
       </div>
-
-      {/* Faint placeholder content behind the overlay */}
-      <FixedWidthContainer className="py-10 opacity-10 pointer-events-none select-none">
-        <div className="space-y-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-bg-secondary border border-aero-500/10 rounded p-6">
-              <div className="h-3 w-1/3 bg-aero-500/20 rounded mb-3" />
-              <div className="h-2 w-full bg-aero-500/10 rounded mb-2" />
-              <div className="h-2 w-2/3 bg-aero-500/10 rounded" />
-            </div>
-          ))}
-        </div>
-      </FixedWidthContainer>
     </div>
   )
 }

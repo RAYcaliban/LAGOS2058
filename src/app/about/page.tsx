@@ -415,25 +415,38 @@ export default function AboutPage() {
   const evt = FLAT[active]
 
   return (
-    <div className="py-10 space-y-10">
-      {/* Header */}
-      <FixedWidthContainer className="text-center space-y-3">
-        <h1 className="font-display text-3xl font-bold tracking-[4px] text-aero-500">
-          HOW WE GOT HERE
-        </h1>
-        <p className="text-text-muted text-sm max-w-xl mx-auto leading-relaxed">
-          Nigeria in 2058 is the product of thirty years of invasion, reconstruction, industrialization,
-          demographic collapse, and deferred reckoning. This is the history your party inherits.
-        </p>
-        <div className="glow-line max-w-xs mx-auto" />
-      </FixedWidthContainer>
+    <div className="space-y-0">
+      {/* Header — archival footage banner */}
+      <div className="poster-section">
+        <div
+          className="poster-bg"
+          style={{ backgroundImage: "url('/images/archival.jpg')" }}
+        />
+        <div className="poster-overlay" style={{ background: 'rgba(10,15,20,0.78)' }} />
+        <div className="poster-overlay" style={{ background: 'rgba(0,60,30,0.25)' }} />
+        <div className="poster-content max-w-7xl mx-auto px-6 py-16">
+          {/* Archival timestamp aesthetic */}
+          <p className="font-mono text-nigeria-500/80 text-xs tracking-[6px] uppercase mb-4">
+            ▶ ARCHIVE · FIFTH REPUBLIC · DECLASSIFIED
+          </p>
+          <h1 className="pixel-brand text-5xl md:text-7xl text-white leading-none mb-4">
+            HOW WE<br />GOT HERE
+          </h1>
+          <div className="glow-line max-w-sm mb-4" />
+          <p className="text-white/60 text-sm max-w-xl leading-relaxed">
+            Nigeria in 2058 is the product of thirty years of invasion, reconstruction, industrialization,
+            demographic collapse, and deferred reckoning. This is the history your party inherits.
+          </p>
+        </div>
+      </div>
 
+      <div className="py-10 space-y-10">
       {/* Event detail panel */}
       <FixedWidthContainer>
-        <div className="border border-aero-500/10 rounded bg-bg-secondary/50 p-6 max-w-2xl mx-auto min-h-[9rem]">
+        <div className="border border-aero-500/25 rounded bg-bg-secondary/80 p-6 max-w-2xl mx-auto min-h-[9rem]" style={{ backdropFilter: 'blur(10px)' }}>
           <div className="flex items-baseline gap-3 mb-2">
-            <span className="font-display text-sm font-bold text-aero-500">{evt.year}</span>
-            <span className="text-text-muted text-xs font-medium">{evt.yearTitle}</span>
+            <span className="pixel-brand text-xl" style={{ color: '#008751' }}>{evt.year}</span>
+            <span className="text-text-muted text-xs font-medium uppercase tracking-wider">{evt.yearTitle}</span>
             {evt.date && (
               <span className="font-mono text-[10px] text-aero-400/60 uppercase ml-auto">{evt.date}</span>
             )}
@@ -516,9 +529,8 @@ export default function AboutPage() {
                 <div key={i}>
                   {ev.isFirstOfYear && (
                     <span
-                      className={`absolute font-mono text-[9px] tracking-widest select-none transition-colors ${
-                        ev.year === activeYear(active) ? 'text-aero-400' : 'text-aero-500/35'
-                      }`}
+                      className="absolute font-mono text-[9px] tracking-widest select-none transition-colors"
+                    style={{ color: ev.year === activeYear(active) ? '#008751' : 'rgba(42,139,154,0.35)' }}
                       style={{
                         top: '6px',
                         left: `${x}px`,
@@ -544,12 +556,21 @@ export default function AboutPage() {
                       className={`rounded-full transition-all duration-150 ${
                         isActive
                           ? isLast
-                            ? 'w-3.5 h-3.5 bg-aero-400 border border-aero-300 shadow-[0_0_10px_2px] shadow-aero-500/50'
-                            : 'w-3 h-3 bg-aero-500 border border-aero-400 shadow-[0_0_8px] shadow-aero-500/40'
+                            ? 'w-3.5 h-3.5 border shadow-[0_0_10px_2px]'
+                            : 'w-3 h-3 border shadow-[0_0_8px]'
                           : ev.isKeyYear
-                          ? 'w-2 h-2 bg-aero-500/30 border border-aero-500/50 group-hover:bg-aero-500/60'
-                          : 'w-1.5 h-1.5 bg-bg-secondary border border-aero-500/20 group-hover:border-aero-500/50 group-hover:bg-aero-500/20'
+                          ? 'w-2 h-2 border group-hover:opacity-80'
+                          : 'w-1.5 h-1.5 bg-bg-secondary border group-hover:opacity-60'
                       }`}
+                    style={
+                      isActive
+                        ? isLast
+                          ? { backgroundColor: '#00A862', borderColor: '#008751', boxShadow: '0 0 10px 2px rgba(0,135,81,0.5)' }
+                          : { backgroundColor: '#008751', borderColor: '#00A862', boxShadow: '0 0 8px rgba(0,135,81,0.4)' }
+                        : ev.isKeyYear
+                        ? { backgroundColor: 'rgba(0,135,81,0.25)', borderColor: 'rgba(0,135,81,0.5)' }
+                        : { borderColor: 'rgba(42,139,154,0.2)' }
+                    }
                     />
                   </button>
                 </div>
@@ -558,6 +579,7 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
+      </div> {/* end py-10 */}
     </div>
   )
 }

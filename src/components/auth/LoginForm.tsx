@@ -40,7 +40,7 @@ export function LoginForm() {
   return (
     <AeroPanel className="w-full max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h1 className="font-display text-2xl font-bold tracking-[4px] text-aero-500">
+        <h1 className="pixel-brand text-4xl text-white tracking-widest">
           LOGIN
         </h1>
         <div className="glow-line mt-2" />

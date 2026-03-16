@@ -81,10 +81,18 @@ function CharacterCreateContent() {
   }
 
   return (
-    <FixedWidthContainer className="py-10">
+    <div className="poster-section min-h-[calc(100vh-4rem)] flex items-center justify-center">
+      <div className="poster-bg" style={{ backgroundImage: "url('/images/hero-city.jpg')" }} />
+      <div className="poster-overlay" style={{ background: 'rgba(10,15,20,0.82)' }} />
+      <div className="poster-content w-full max-w-lg mx-auto px-4 py-16">
+        <div className="text-center mb-6">
+          <span className="pixel-brand text-3xl text-white">LAGOS</span>
+          <span className="pixel-brand text-2xl ml-2" style={{ color: '#008751' }}>2058</span>
+          <div className="pixel-brand text-lg mt-1" style={{ color: '#008751', letterSpacing: '0.4em' }}>★★★</div>
+        </div>
       <AeroPanel className="max-w-lg mx-auto">
         <div className="text-center mb-6">
-          <h1 className="font-display text-2xl font-bold tracking-[4px] text-aero-500">
+          <h1 className="pixel-brand text-4xl text-white">
             CREATE CHARACTER
           </h1>
           <div className="glow-line mt-2" />
@@ -149,7 +157,8 @@ function CharacterCreateContent() {
           </AeroButton>
         </form>
       </AeroPanel>
-    </FixedWidthContainer>
+      </div>
+    </div>
   )
 }
 

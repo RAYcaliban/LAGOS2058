@@ -70,7 +70,7 @@ export function RegisterForm() {
   if (success) {
     return (
       <AeroPanel className="w-full max-w-md mx-auto text-center">
-        <h2 className="font-display text-xl font-bold tracking-[3px] text-aero-500 mb-3">
+        <h2 className="pixel-brand text-3xl text-white tracking-widest mb-3">
           CHECK YOUR EMAIL
         </h2>
         <div className="glow-line mb-4" />
@@ -85,7 +85,7 @@ export function RegisterForm() {
   return (
     <AeroPanel className="w-full max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h1 className="font-display text-2xl font-bold tracking-[4px] text-aero-500">
+        <h1 className="pixel-brand text-4xl text-white tracking-widest">
           REGISTER
         </h1>
         <div className="glow-line mt-2" />

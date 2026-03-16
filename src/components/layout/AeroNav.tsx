@@ -27,17 +27,18 @@ export function AeroNav() {
   })
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-aero-500/20 bg-bg-primary/90 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-aero-500/30 bg-bg-primary/95 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center justify-between">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-display text-lg font-bold tracking-[3px] text-aero-500 group-hover:text-aero-400 transition-colors">
+            <span className="pixel-brand text-2xl text-white group-hover:text-aero-300 transition-colors leading-none">
               LAGOS
             </span>
-            <span className="font-display text-xs tracking-[2px] text-parchment-600 opacity-60">
+            <span className="pixel-brand text-lg leading-none" style={{ color: '#008751' }}>
               2058
             </span>
+            <span className="nigeria-stars pixel-brand text-base leading-none ml-1">★★★</span>
           </Link>
 
           {/* Navigation links */}
@@ -50,7 +51,7 @@ export function AeroNav() {
                   href={href}
                   className={`px-3 py-1.5 text-sm font-medium tracking-wider uppercase transition-all duration-200 ${
                     isActive
-                      ? 'text-aero-400 border-b-2 border-aero-500'
+                      ? 'text-white border-b-2 border-nigeria-500'
                       : 'text-text-secondary hover:text-text-primary hover:bg-aero-500/5'
                   }`}
                 >

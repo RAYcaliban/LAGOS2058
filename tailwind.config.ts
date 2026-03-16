@@ -9,6 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Nigerian green palette
+        nigeria: {
+          50: '#e6f5ed',
+          400: '#00A862',
+          500: '#008751',
+          600: '#006B41',
+          700: '#005233',
+        },
         // Aero teal palette
         aero: {
           50: '#f0fdfa',
@@ -72,6 +80,7 @@ const config: Config = {
         sans: ['Rajdhani', 'Segoe UI', 'sans-serif'],
         display: ['Orbitron', 'monospace'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        pixel: ['VT323', 'monospace'],
       },
       boxShadow: {
         'aero': '0 2px 24px rgba(160, 80, 20, 0.1), 0 0 12px rgba(42, 139, 154, 0.04)',

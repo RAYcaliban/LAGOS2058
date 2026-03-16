@@ -76,7 +76,7 @@ export default function MapPage() {
   }, [])
 
   return (
-    <div className="fixed inset-0 top-[49px]">
+    <div className="fixed inset-0 top-[64px]">
       <NigeriaMap
         choroMode={choroMode}
         ethSubMode={ethSubMode}

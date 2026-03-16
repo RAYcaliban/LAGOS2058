@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { FixedWidthContainer } from '@/components/layout/FixedWidthContainer'
 import { AeroPanel } from '@/components/ui/AeroPanel'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 const PRIVATE_ACTION_TYPES = [
   'epo_engagement',
@@ -64,14 +65,15 @@ export default async function FeedPage() {
     .sort((a, b) => b - a)
 
   return (
+    <>
+      <PageHeader
+        title="PUBLIC FEED"
+        label={`Turn ${currentTurn} · Campaign Actions`}
+        image="/images/skyline.jpg"
+        wash="teal"
+        subtitle="Showing public campaign actions across all parties."
+      />
     <FixedWidthContainer className="py-6 space-y-6">
-      <div>
-        <h1 className="naira-header text-2xl mb-1">Public Actions Feed</h1>
-        <p className="text-sm text-text-muted">
-          Current turn: {currentTurn}. Showing public campaign actions.
-        </p>
-      </div>
-      <div className="glow-line" />
 
       {actions.length === 0 ? (
         <AeroPanel>
@@ -120,5 +122,6 @@ export default async function FeedPage() {
         ))
       )}
     </FixedWidthContainer>
+    </>
   )
 }
