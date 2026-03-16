@@ -11,7 +11,9 @@ import { AeroPanel } from '@/components/ui/AeroPanel'
 export function RegisterForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const [discordUsername, setDiscordUsername] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -28,13 +30,19 @@ export function RegisterForm() {
       return
     }
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
     const supabase = createClient()
 
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { display_name: displayName },
+        data: { display_name: displayName, discord_username: discordUsername },
       },
     })
 
@@ -110,6 +118,24 @@ export function RegisterForm() {
           placeholder="Min 6 characters"
           required
           minLength={6}
+        />
+
+        <AeroInput
+          label="Confirm Password"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Re-enter your password"
+          required
+        />
+
+        <AeroInput
+          label="Discord Username"
+          type="text"
+          value={discordUsername}
+          onChange={(e) => setDiscordUsername(e.target.value)}
+          placeholder="your_username"
+          required
         />
 
         {error && (
