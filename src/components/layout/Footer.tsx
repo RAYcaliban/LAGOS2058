@@ -10,15 +10,15 @@ export function Footer() {
             <span className="nigeria-stars pixel-brand text-sm">★★★</span>
           </div>
           <p className="text-[10px] text-text-muted tracking-wider uppercase">
-            Federal Republic of Nigeria &middot; A Political Campaign Simulation
+            Fifth Republic of Nigeria &middot; A Political Campaign Simulation
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <a
-            href="https://discord.gg/lagos2058"
+            href="https://discord.gg/GBdTruaCDM"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-text-muted hover:text-aero-400 transition-colors"
+            className="text-[11px] font-medium tracking-widest uppercase px-3 py-1.5 border border-nigeria-500/50 text-nigeria-400 hover:bg-nigeria-500/20 hover:border-nigeria-500 transition-colors"
           >
             Discord
           </a>
@@ -26,13 +26,13 @@ export function Footer() {
             href="https://twitter.com/lagos2058"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-text-muted hover:text-aero-400 transition-colors"
+            className="text-[11px] font-medium tracking-widest uppercase px-3 py-1.5 border border-aero-500/40 text-aero-400 hover:bg-aero-500/20 hover:border-aero-500 transition-colors"
           >
             Twitter
           </a>
           <a
             href="/about"
-            className="text-xs text-text-muted hover:text-aero-400 transition-colors"
+            className="text-[11px] font-medium tracking-widest uppercase px-3 py-1.5 border border-white/20 text-white/60 hover:bg-white/10 hover:text-white/90 transition-colors"
           >
             About
           </a>
