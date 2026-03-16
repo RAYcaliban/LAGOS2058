@@ -15,6 +15,7 @@ interface ActionFormProps {
   onLanguageChange: (lang: string) => void
   description: string
   onDescriptionChange: (desc: string) => void
+  partyId?: string
 }
 
 export function OppositionResearchForm({
@@ -22,6 +23,7 @@ export function OppositionResearchForm({
   onParamsChange,
   description,
   onDescriptionChange,
+  partyId,
 }: ActionFormProps) {
   return (
     <div className="space-y-4">
@@ -32,6 +34,7 @@ export function OppositionResearchForm({
       <PartySelector
         value={params.target_party ?? ''}
         onChange={(target_party) => onParamsChange({ ...params, target_party })}
+        excludePartyId={partyId}
       />
 
       <IssueDimensionSelector

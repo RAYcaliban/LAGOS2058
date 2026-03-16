@@ -47,7 +47,7 @@ function areaSurcharge(
     case 'regional': {
       if (nTargetAzs === 0) return 3; // national reach
       if (nTargetAzs > 1) {
-        return nTargetAzs - 1;
+        return Math.min(nTargetAzs - 1, 3); // cap at national rate
       }
       return 0;
     }
@@ -133,8 +133,8 @@ export function computeActionCost(
     }
 
     case 'poll': {
-      // poll_tier param overrides base cost (1-5)
-      const pollTier = Number(params.poll_tier ?? 1);
+      // poll_tier param overrides base cost (1-3)
+      const pollTier = Math.min(Number(params.poll_tier ?? 1), 3);
       cost = pollTier;
       break;
     }

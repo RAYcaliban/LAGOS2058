@@ -46,6 +46,9 @@ export function LanguageSelector({ value, onChange, error }: LanguageSelectorPro
         options={LANGUAGE_OPTIONS}
         error={error}
       />
+      <div className="rounded border border-aero-500/20 bg-aero-500/5 px-3 py-2 text-xs text-text-secondary">
+        The chosen language impacts the salience of issues in the targeted area.
+      </div>
       {value && topIssues.length > 0 && (
         <div>
           <button

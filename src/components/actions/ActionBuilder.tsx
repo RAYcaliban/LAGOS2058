@@ -40,7 +40,7 @@ const ACTION_OPTIONS = [
   { value: 'crisis_response', label: 'Crisis Response (2+ PC)' },
   { value: 'manifesto', label: 'Manifesto (3 PC)' },
   { value: 'fundraising', label: 'Fundraising (2 PC)' },
-  { value: 'poll', label: 'Poll (1-5 PC)' },
+  { value: 'poll', label: 'Poll (1-3 PC)' },
   { value: 'epo_intelligence', label: 'EPO Intelligence (FREE)' },
 ]
 
@@ -72,6 +72,7 @@ export interface ActionFormProps {
   onLanguageChange: (lang: string) => void
   description: string
   onDescriptionChange: (desc: string) => void
+  partyId?: string
 }
 
 interface ActionBuilderProps {
@@ -191,10 +192,10 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
             placeholder="Select an action type..."
           />
 
-          {/* D3: Manifesto turn-3 warning */}
-          {actionType === 'manifesto' && turn > 3 && (
+          {/* D3: Manifesto turn-1 warning */}
+          {actionType === 'manifesto' && turn > 1 && (
             <div className="rounded border border-danger/30 bg-danger/5 px-3 py-2 text-xs text-danger">
-              Warning: Manifestos submitted after Turn 3 have significantly reduced impact. Consider prioritising this action.
+              Warning: Manifestos submitted after Turn 1 may not be processed. This action must be completed by Turn 1.
             </div>
           )}
 
@@ -210,6 +211,7 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
               onLanguageChange={setLanguage}
               description={description}
               onDescriptionChange={setDescription}
+              partyId={partyId}
             />
           )}
 

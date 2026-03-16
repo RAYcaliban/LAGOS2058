@@ -334,9 +334,9 @@ export const LANGUAGE_ISSUE_EMPHASIS: Record<CampaignLanguage, Record<number, nu
     11: 0.10,  // military_role
     14: 0.08,  // womens_rights
     19: 0.08,  // agricultural_policy
-    21: 0.08,  // biological_enhancement
-    22: 0.08,  // trade_policy
-    24: 0.08,  // media_freedom (actually healthcare at idx 24)
+    21: 0.08,  // trade_policy
+    22: 0.08,  // environmental_regulation
+    24: 0.08,  // healthcare
     26: 0.08,  // energy_policy
   },
   hausa: {
@@ -389,7 +389,7 @@ export const LANGUAGE_ISSUE_EMPHASIS: Record<CampaignLanguage, Record<number, nu
     9: 0.15,   // education
     19: 0.12,  // agricultural_policy
     11: 0.12,  // military_role
-    25: 0.10,  // pada_status (actually healthcare at idx 24, pada at 25)
+    25: 0.10,  // pada_status
     16: 0.10,  // infrastructure
     26: 0.10,  // energy_policy
     4: 0.08,   // ethnic_quotas
@@ -398,7 +398,7 @@ export const LANGUAGE_ISSUE_EMPHASIS: Record<CampaignLanguage, Record<number, nu
     17: 0.07,  // land_tenure
   },
   mandarin: {
-    3: 0.25,   // bic_reform (engine comment says chinese_relations)
+    3: 0.25,   // bic_reform
     22: 0.15,  // environmental_regulation
     11: 0.12,  // military_role
     21: 0.10,  // trade_policy

@@ -1,7 +1,6 @@
 'use client'
 
 import { AeroSelect } from '@/components/ui/AeroSelect'
-import { LanguageSelector } from '@/components/actions/fields/LanguageSelector'
 import { DescriptionEditor } from '@/components/actions/fields/DescriptionEditor'
 
 interface ActionFormProps {
@@ -34,8 +33,6 @@ const SOURCE_INFO: Record<string, string> = {
 export function FundraisingForm({
   params,
   onParamsChange,
-  language,
-  onLanguageChange,
   description,
   onDescriptionChange,
 }: ActionFormProps) {
@@ -57,11 +54,6 @@ export function FundraisingForm({
       {source && SOURCE_INFO[source] && (
         <p className="text-xs text-text-muted -mt-2">{SOURCE_INFO[source]}</p>
       )}
-
-      <LanguageSelector
-        value={language}
-        onChange={onLanguageChange}
-      />
 
       <DescriptionEditor
         value={description}

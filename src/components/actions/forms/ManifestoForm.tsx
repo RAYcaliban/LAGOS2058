@@ -60,7 +60,7 @@ export function ManifestoForm({
   return (
     <div className="space-y-4">
       <div className="rounded border border-aero-500/20 bg-aero-500/5 px-3 py-2 text-xs text-text-secondary">
-        National scope. Best submitted by Turn 3.
+        National scope. Required by Turn 1.
       </div>
 
       <div className="space-y-1">
