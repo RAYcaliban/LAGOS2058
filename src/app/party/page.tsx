@@ -12,7 +12,7 @@ import { CreatePartyForm } from '@/components/party/CreatePartyForm'
 import { PartyDetails } from '@/components/party/PartyDetails'
 
 function PartyHubContent() {
-  const { user, profile } = useAuth()
+  const { user, profile, refetchProfile } = useAuth()
   const { party, members, loading, isOwner, refetch } = useParty(profile?.party_id, user?.id)
   const [tab, setTab] = useState<'browse' | 'create'>('browse')
 
@@ -44,6 +44,7 @@ function PartyHubContent() {
             userId={user?.id ?? ''}
             isOwner={isOwner}
             onRefetch={refetch}
+            onProfileRefetch={refetchProfile}
           />
           <AeroPanel>
             <h3 className="naira-header mb-4">All Parties</h3>

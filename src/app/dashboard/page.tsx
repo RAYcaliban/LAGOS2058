@@ -10,6 +10,7 @@ import { PollResults } from '@/components/dashboard/PollResults'
 import { ScandalHistory } from '@/components/dashboard/ScandalHistory'
 import { CharacterCard } from '@/components/dashboard/CharacterCard'
 import { NoPartyPrompt } from '@/components/dashboard/NoPartyPrompt'
+import { ReadOnlyPartyBrowser } from '@/components/party/ReadOnlyPartyBrowser'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -103,6 +104,8 @@ export default async function DashboardPage() {
         <ActionHistory actionHistory={(partyState?.action_history ?? []) as Record<string, unknown>[]} />
         <ScandalHistory scandalHistory={(partyState?.scandal_history ?? []) as Record<string, unknown>[]} />
       </div>
+
+      <ReadOnlyPartyBrowser />
     </FixedWidthContainer>
     </>
   )

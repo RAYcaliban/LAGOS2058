@@ -32,6 +32,11 @@ export function useAuth() {
     setProfile(data)
   }, [])
 
+  const refetchProfile = useCallback(async () => {
+    const currentUser = user ?? (await supabaseRef.current.auth.getUser()).data.user
+    if (currentUser) await fetchProfile(currentUser.id)
+  }, [user, fetchProfile])
+
   useEffect(() => {
     const supabase = supabaseRef.current
 
@@ -69,6 +74,7 @@ export function useAuth() {
     profile,
     loading,
     signOut,
+    refetchProfile,
     isGM: profile?.role === 'gm' || profile?.role === 'admin',
     hasParty: !!profile?.party_id,
     hasCharacter: !!profile?.character_name,

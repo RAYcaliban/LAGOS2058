@@ -19,7 +19,7 @@ interface PartyWithCount {
 }
 
 export function PartyBrowser({ onJoined, readOnly }: { onJoined: () => void; readOnly?: boolean }) {
-  const { user } = useAuth()
+  const { user, refetchProfile } = useAuth()
   const [parties, setParties] = useState<PartyWithCount[]>([])
   const [index, setIndex] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -60,7 +60,10 @@ export function PartyBrowser({ onJoined, readOnly }: { onJoined: () => void; rea
       .from('profiles')
       .update({ party_id: partyId })
       .eq('id', user.id)
-    if (!error) onJoined()
+    if (!error) {
+      await refetchProfile()
+      onJoined()
+    }
     setJoining(false)
   }
 

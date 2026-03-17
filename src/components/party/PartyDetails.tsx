@@ -32,9 +32,10 @@ interface PartyDetailsProps {
   userId: string
   isOwner: boolean
   onRefetch: () => void
+  onProfileRefetch?: () => Promise<void>
 }
 
-export function PartyDetails({ party, members, userId, isOwner, onRefetch }: PartyDetailsProps) {
+export function PartyDetails({ party, members, userId, isOwner, onRefetch, onProfileRefetch }: PartyDetailsProps) {
   const [showTransfer, setShowTransfer] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [leaving, setLeaving] = useState(false)
@@ -48,6 +49,7 @@ export function PartyDetails({ party, members, userId, isOwner, onRefetch }: Par
       .from('profiles')
       .update({ party_id: null })
       .eq('id', userId)
+    await onProfileRefetch?.()
     onRefetch()
     router.refresh()
     setLeaving(false)

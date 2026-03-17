@@ -16,7 +16,7 @@ const COLOR_PRESETS = [
 ]
 
 export function CreatePartyForm() {
-  const { user, profile } = useAuth()
+  const { user, profile, refetchProfile } = useAuth()
   const [name, setName] = useState('')
   const [fullName, setFullName] = useState('')
   const [color, setColor] = useState(COLOR_PRESETS[0])
@@ -126,6 +126,8 @@ export function CreatePartyForm() {
       setLoading(false)
       return
     }
+
+    await refetchProfile()
 
     // Auto-generate wiki stubs (fire-and-forget)
     fetch('/api/wiki/auto-generate', {

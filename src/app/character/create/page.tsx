@@ -13,7 +13,7 @@ import { AeroButton } from '@/components/ui/AeroButton'
 import { ETHNIC_GROUP_OPTIONS, RELIGIOUS_GROUP_OPTIONS } from '@/lib/constants/character'
 
 function CharacterCreateContent() {
-  const { user, profile } = useAuth()
+  const { user, profile, refetchProfile } = useAuth()
   const [characterName, setCharacterName] = useState('')
   const [ethnicity, setEthnicity] = useState('')
   const [religion, setReligion] = useState('')
@@ -56,6 +56,8 @@ function CharacterCreateContent() {
       setLoading(false)
       return
     }
+
+    await refetchProfile()
 
     // Auto-generate character wiki stub (fire-and-forget)
     const slug = characterName.toLowerCase().replace(/\s+/g, '-')
