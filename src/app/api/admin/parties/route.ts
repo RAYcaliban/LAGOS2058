@@ -71,6 +71,16 @@ export async function DELETE(request: Request) {
     .eq('party_id', id)
   if (memberError) return NextResponse.json({ error: memberError.message }, { status: 500 })
 
+  // Delete dependent rows that have FK references to parties
+  const { error: stateError } = await admin.from('party_state').delete().eq('party_id', id)
+  if (stateError) return NextResponse.json({ error: stateError.message }, { status: 500 })
+
+  const { error: actionsError } = await admin.from('action_submissions').delete().eq('party_id', id)
+  if (actionsError) return NextResponse.json({ error: actionsError.message }, { status: 500 })
+
+  const { error: wikiError } = await admin.from('wiki_pages').delete().eq('party_id', id)
+  if (wikiError) return NextResponse.json({ error: wikiError.message }, { status: 500 })
+
   // Delete the party
   const { error } = await admin.from('parties').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
