@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { AeroButton } from '@/components/ui/AeroButton'
+import { PC_INCOME_BASE, PC_INCOME_PER_EXTRA_MEMBER, PC_INCOME_CAP } from '@/lib/constants/actions'
 
 interface PartyWithCount {
   id: string
@@ -110,8 +111,12 @@ export function PartyBrowser({ onJoined }: { onJoined: () => void }) {
                 {party.name}
               </div>
               <div className="font-medium text-text-primary">{party.full_name}</div>
-              <div className="text-xs text-text-muted mt-0.5">
+              <div className="text-xs text-text-muted mt-0.5 group/tip relative inline-block cursor-help">
                 {party.member_count} {party.member_count === 1 ? 'member' : 'members'}
+                <span className="ml-1 text-aero-400">&#9432;</span>
+                <div className="absolute bottom-full left-0 mb-1 hidden group-hover/tip:block bg-bg-secondary border border-border-subtle rounded px-2 py-1.5 text-[10px] text-text-muted whitespace-nowrap z-10">
+                  Larger parties earn more PC: {PC_INCOME_BASE}/turn base + {PC_INCOME_PER_EXTRA_MEMBER} per extra member (max {PC_INCOME_CAP})
+                </div>
               </div>
             </div>
           </div>
