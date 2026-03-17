@@ -15,6 +15,7 @@ interface Party {
   full_name: string
   color: string
   leader_name: string | null
+  logo_url: string | null
 }
 
 interface GameState {
@@ -50,7 +51,7 @@ export function ImpersonateView({ gameState }: ImpersonateViewProps) {
 
   // Load parties
   useEffect(() => {
-    supabase.from('parties').select('id, name, full_name, color, leader_name').then(({ data }) => {
+    supabase.from('parties').select('id, name, full_name, color, leader_name, logo_url').then(({ data }) => {
       setParties(data ?? [])
     })
   }, [supabase])

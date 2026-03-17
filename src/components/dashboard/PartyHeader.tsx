@@ -2,7 +2,7 @@ import { AeroPanel } from '@/components/ui/AeroPanel'
 import { CountdownTimer } from '@/components/ui/CountdownTimer'
 
 interface PartyHeaderProps {
-  party: { name: string; full_name: string; color: string; leader_name: string | null } | null
+  party: { name: string; full_name: string; color: string; leader_name: string | null; logo_url: string | null } | null
   turn: number
   phase: string
   deadline: string | null
@@ -16,12 +16,20 @@ export function PartyHeader({ party, turn, phase, deadline, submissionOpen }: Pa
     <AeroPanel>
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">
-          <div
-            className="w-12 h-12 rounded-lg flex items-center justify-center font-display font-bold text-lg"
-            style={{ backgroundColor: party.color, color: '#fff' }}
-          >
-            {party.name}
-          </div>
+          {party.logo_url ? (
+            <img
+              src={party.logo_url}
+              alt={party.name}
+              className="w-12 h-12 rounded-lg object-cover"
+            />
+          ) : (
+            <div
+              className="w-12 h-12 rounded-lg flex items-center justify-center font-display font-bold text-lg"
+              style={{ backgroundColor: party.color, color: '#fff' }}
+            >
+              {party.name}
+            </div>
+          )}
           <div>
             <h1 className="text-xl font-bold">{party.full_name}</h1>
             {party.leader_name && (
