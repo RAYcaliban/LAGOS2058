@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { verifyGMAccess } from '@/lib/supabase/admin-guard'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -73,5 +74,9 @@ export async function DELETE(request: Request) {
   // Delete the party
   const { error } = await admin.from('parties').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  revalidatePath('/dashboard')
+  revalidatePath('/party')
+
   return NextResponse.json({ success: true })
 }
