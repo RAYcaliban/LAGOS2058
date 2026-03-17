@@ -52,6 +52,15 @@ export default function AdminPlayersPage() {
     refetchProfiles()
   }
 
+  async function handleDeletePlayer(id: string) {
+    await fetch('/api/admin/profiles/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    refetchProfiles()
+  }
+
   return (
     <div className="p-6 space-y-6">
       <div>
@@ -65,6 +74,7 @@ export default function AdminPlayersPage() {
           onRoleChange={handleRoleChange}
           onPartyChange={handlePartyChange}
           onClearCharacter={handleClearCharacter}
+          onDeletePlayer={handleDeletePlayer}
         />
       </AeroPanel>
     </div>

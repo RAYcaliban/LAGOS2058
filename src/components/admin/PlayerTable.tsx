@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { AeroInput } from '@/components/ui/AeroInput'
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
 
 interface Profile {
   id: string
@@ -26,12 +27,14 @@ interface PlayerTableProps {
   onRoleChange: (id: string, role: string) => void
   onPartyChange: (id: string, partyId: string | null) => void
   onClearCharacter?: (id: string) => void
+  onDeletePlayer?: (id: string) => void
 }
 
 const ROLES = ['player', 'gm', 'admin']
 
-export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange, onClearCharacter }: PlayerTableProps) {
+export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange, onClearCharacter, onDeletePlayer }: PlayerTableProps) {
   const [search, setSearch] = useState('')
+  const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null)
 
   const filtered = profiles.filter((p) => {
     const q = search.toLowerCase()
@@ -102,7 +105,7 @@ export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange, on
                 <td className="py-2 px-2 text-text-muted text-xs">
                   {new Date(p.created_at).toLocaleDateString()}
                 </td>
-                <td className="py-2 px-2 text-right">
+                <td className="py-2 px-2 text-right space-x-2">
                   {p.character_name && onClearCharacter && (
                     <button
                       type="button"
@@ -116,6 +119,15 @@ export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange, on
                       Clear Character
                     </button>
                   )}
+                  {onDeletePlayer && (
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTarget(p)}
+                      className="text-[10px] text-danger hover:text-danger/80 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -125,6 +137,20 @@ export function PlayerTable({ profiles, parties, onRoleChange, onPartyChange, on
           <p className="text-center py-4 text-text-muted text-sm">No players found.</p>
         )}
       </div>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete Player"
+        message={deleteTarget ? `Permanently delete ${deleteTarget.display_name} (${deleteTarget.email})? This removes their profile and auth account.` : ''}
+        confirmLabel="Delete"
+        confirmVariant="danger"
+        onConfirm={() => {
+          if (deleteTarget && onDeletePlayer) {
+            onDeletePlayer(deleteTarget.id)
+            setDeleteTarget(null)
+          }
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }
