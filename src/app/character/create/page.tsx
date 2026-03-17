@@ -57,24 +57,20 @@ function CharacterCreateContent() {
       return
     }
 
-    // Auto-generate character wiki stub
-    try {
-      const slug = characterName.toLowerCase().replace(/\s+/g, '-')
-      await fetch('/api/wiki/auto-generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          characterOnly: true,
-          characterName,
-          ethnicity,
-          religion,
-          bio,
-          slug,
-        }),
-      })
-    } catch {
-      // Non-critical — wiki stub can be created later
-    }
+    // Auto-generate character wiki stub (fire-and-forget)
+    const slug = characterName.toLowerCase().replace(/\s+/g, '-')
+    fetch('/api/wiki/auto-generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        characterOnly: true,
+        characterName,
+        ethnicity,
+        religion,
+        bio,
+        slug,
+      }),
+    }).catch(() => {})
 
     router.push('/dashboard')
     router.refresh()
