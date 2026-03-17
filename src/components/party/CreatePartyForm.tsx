@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import { AeroInput } from '@/components/ui/AeroInput'
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { AeroButton } from '@/components/ui/AeroButton'
-import { ETHNIC_GROUP_OPTIONS, RELIGIOUS_GROUP_OPTIONS } from '@/lib/constants/character'
+import { ETHNIC_GROUP_OPTIONS, RELIGIOUS_GROUP_OPTIONS, religionToEngine } from '@/lib/constants/character'
 
 const COLOR_PRESETS = [
   '#dc2626', '#ea580c', '#d97706', '#65a30d', '#16a34a',
@@ -102,7 +102,8 @@ export function CreatePartyForm() {
         leader_name: leaderName,
         owner_id: user.id,
         ethnicity: ethnicity || null,
-        religion: religion || null,
+        religion: religionToEngine(religion) || null,
+        religion_display: religion || null,
         description: description || null,
         logo_url: logoUrl,
       } as any)
@@ -127,8 +128,6 @@ export function CreatePartyForm() {
       return
     }
 
-    await refetchProfile()
-
     // Auto-generate wiki stubs (fire-and-forget)
     fetch('/api/wiki/auto-generate', {
       method: 'POST',
@@ -144,8 +143,11 @@ export function CreatePartyForm() {
       }),
     }).catch(() => {})
 
+    // Navigate first — refetchProfile() would update useAuth and unmount
+    // this component (parent switches to "has party" branch) before push fires
     router.push('/dashboard')
     router.refresh()
+    refetchProfile()
   }
 
   return (

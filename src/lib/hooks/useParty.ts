@@ -19,6 +19,7 @@ interface Party {
   owner_id: string | null
   ethnicity: string | null
   religion: string | null
+  religion_display: string | null
   description: string | null
   logo_url: string | null
 }
@@ -49,6 +50,11 @@ export function useParty(partyId: string | null | undefined, userId: string | nu
     setMembers(membersRes.data ?? [])
     setLoading(false)
   }, [partyId, supabase])
+
+  // Show loading spinner when partyId changes (e.g. after joining a party)
+  useEffect(() => {
+    setLoading(true)
+  }, [partyId])
 
   useEffect(() => {
     refetch()

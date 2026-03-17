@@ -22,6 +22,9 @@ interface Party {
   color: string
   leader_name: string | null
   owner_id: string | null
+  ethnicity: string | null
+  religion: string | null
+  religion_display: string | null
   description: string | null
   logo_url: string | null
 }

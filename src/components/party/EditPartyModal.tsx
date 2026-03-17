@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import { AeroPanel } from '@/components/ui/AeroPanel'
 import { AeroButton } from '@/components/ui/AeroButton'
 import { AeroInput } from '@/components/ui/AeroInput'
+import { AeroSelect } from '@/components/ui/AeroSelect'
+import { ETHNIC_GROUP_OPTIONS, RELIGIOUS_GROUP_OPTIONS, religionToEngine } from '@/lib/constants/character'
 
 const COLOR_PRESETS = [
   '#dc2626', '#ea580c', '#d97706', '#65a30d', '#16a34a',
@@ -18,6 +20,9 @@ interface EditPartyModalProps {
     name: string
     full_name: string
     color: string
+    ethnicity: string | null
+    religion: string | null
+    religion_display: string | null
     description: string | null
     logo_url: string | null
   }
@@ -30,6 +35,8 @@ export function EditPartyModal({ party, userId, onClose, onSaved }: EditPartyMod
   const [name, setName] = useState(party.name)
   const [fullName, setFullName] = useState(party.full_name)
   const [color, setColor] = useState(party.color)
+  const [ethnicity, setEthnicity] = useState(party.ethnicity ?? '')
+  const [religion, setReligion] = useState(party.religion_display ?? party.religion ?? '')
   const [description, setDescription] = useState(party.description ?? '')
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(party.logo_url)
@@ -88,6 +95,9 @@ export function EditPartyModal({ party, userId, onClose, onSaved }: EditPartyMod
       name: name.toUpperCase(),
       full_name: fullName,
       color,
+      ethnicity: ethnicity || null,
+      religion: religion ? religionToEngine(religion) : null,
+      religion_display: religion || null,
       description: description || null,
     }
     if (logoUrl !== undefined) {
@@ -178,6 +188,24 @@ export function EditPartyModal({ party, userId, onClose, onSaved }: EditPartyMod
               onChange={(e) => setFullName(e.target.value)}
               placeholder="All Progressives Congress"
               required
+            />
+          </div>
+
+          {/* Ethnicity & Religion */}
+          <div className="grid grid-cols-2 gap-4">
+            <AeroSelect
+              label="Ethnicity"
+              value={ethnicity}
+              onChange={(e) => setEthnicity(e.target.value)}
+              options={ETHNIC_GROUP_OPTIONS}
+              placeholder="Select ethnicity"
+            />
+            <AeroSelect
+              label="Religion"
+              value={religion}
+              onChange={(e) => setReligion(e.target.value)}
+              options={RELIGIOUS_GROUP_OPTIONS}
+              placeholder="Select religion"
             />
           </div>
 

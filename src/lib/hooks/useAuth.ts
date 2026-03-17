@@ -14,7 +14,9 @@ interface Profile {
   character_name: string | null
   ethnicity: string | null
   religion: string | null
+  religion_display: string | null
   bio: string | null
+  discord_handle: string | null
 }
 
 export function useAuth() {

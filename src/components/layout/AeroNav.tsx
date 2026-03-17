@@ -67,9 +67,12 @@ export function AeroNav() {
               <span className="text-sm text-text-muted animate-pulse">...</span>
             ) : user && profile ? (
               <>
-                <span className="text-sm text-text-secondary">
+                <Link
+                  href="/profile"
+                  className="text-sm text-text-secondary hover:text-aero-300 transition-colors"
+                >
                   {profile.character_name ?? profile.display_name}
-                </span>
+                </Link>
                 {profile.party_id && (
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-aero-500/20 text-aero-400 font-mono uppercase tracking-wider">
                     {/* Party abbreviation will be shown if available */}

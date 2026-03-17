@@ -41,7 +41,22 @@ export const ETHNIC_GROUP_OPTIONS = ETHNIC_GROUPS.map((g) => ({
   label: g,
 }))
 
-export const RELIGIOUS_GROUP_OPTIONS = RELIGIOUS_GROUPS.map((g) => ({
-  value: g,
-  label: g,
-}))
+// Roleplay aliases — display label differs from engine value
+export const RELIGION_ALIASES: Record<string, string> = {
+  'Shia': 'Mainstream Sunni',
+  'Jewish': 'Secular',
+}
+
+export const RELIGIOUS_GROUP_OPTIONS = [
+  ...RELIGIOUS_GROUPS.map((g) => ({
+    value: g,
+    label: g,
+  })),
+  { value: 'Shia', label: 'Shia' },
+  { value: 'Jewish', label: 'Jewish' },
+]
+
+/** Given a display/dropdown value, return the engine-canonical value */
+export function religionToEngine(display: string): string {
+  return RELIGION_ALIASES[display] ?? display
+}

@@ -10,7 +10,7 @@ import { AeroPanel } from '@/components/ui/AeroPanel'
 import { AeroInput } from '@/components/ui/AeroInput'
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { AeroButton } from '@/components/ui/AeroButton'
-import { ETHNIC_GROUP_OPTIONS, RELIGIOUS_GROUP_OPTIONS } from '@/lib/constants/character'
+import { ETHNIC_GROUP_OPTIONS, RELIGIOUS_GROUP_OPTIONS, religionToEngine } from '@/lib/constants/character'
 
 function CharacterCreateContent() {
   const { user, profile, refetchProfile } = useAuth()
@@ -46,7 +46,8 @@ function CharacterCreateContent() {
       .update({
         character_name: characterName,
         ethnicity,
-        religion,
+        religion: religionToEngine(religion),
+        religion_display: religion,
         bio: bio || null,
       })
       .eq('id', user.id)
@@ -56,8 +57,6 @@ function CharacterCreateContent() {
       setLoading(false)
       return
     }
-
-    await refetchProfile()
 
     // Auto-generate character wiki stub (fire-and-forget)
     const slug = characterName.toLowerCase().replace(/\s+/g, '-')
@@ -74,8 +73,11 @@ function CharacterCreateContent() {
       }),
     }).catch(() => {})
 
+    // Navigate first — refetchProfile() would set character_name, triggering
+    // the redirect guard above and unmounting this component before push fires
     router.push('/dashboard')
     router.refresh()
+    refetchProfile()
   }
 
   return (

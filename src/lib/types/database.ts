@@ -214,6 +214,7 @@ export type Database = {
           name: string
           owner_id: string | null
           religion: string | null
+          religion_display: string | null
         }
         Insert: {
           color: string
@@ -227,6 +228,7 @@ export type Database = {
           name: string
           owner_id?: string | null
           religion?: string | null
+          religion_display?: string | null
         }
         Update: {
           color?: string
@@ -240,6 +242,7 @@ export type Database = {
           name?: string
           owner_id?: string | null
           religion?: string | null
+          religion_display?: string | null
         }
         Relationships: []
       }
@@ -311,12 +314,14 @@ export type Database = {
           bio: string | null
           character_name: string | null
           created_at: string
+          discord_handle: string | null
           display_name: string
           email: string
           ethnicity: string | null
           id: string
           party_id: string | null
           religion: string | null
+          religion_display: string | null
           role: string
         }
         Insert: {
@@ -324,12 +329,14 @@ export type Database = {
           bio?: string | null
           character_name?: string | null
           created_at?: string
+          discord_handle?: string | null
           display_name: string
           email: string
           ethnicity?: string | null
           id: string
           party_id?: string | null
           religion?: string | null
+          religion_display?: string | null
           role?: string
         }
         Update: {
@@ -337,12 +344,14 @@ export type Database = {
           bio?: string | null
           character_name?: string | null
           created_at?: string
+          discord_handle?: string | null
           display_name?: string
           email?: string
           ethnicity?: string | null
           id?: string
           party_id?: string | null
           religion?: string | null
+          religion_display?: string | null
           role?: string
         }
         Relationships: [

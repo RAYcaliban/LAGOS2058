@@ -13,6 +13,7 @@ interface PartyWithCount {
   color: string
   ethnicity: string | null
   religion: string | null
+  religion_display: string | null
   description: string | null
   logo_url: string | null
   member_count: number
@@ -134,7 +135,7 @@ export function PartyBrowser({ onJoined, readOnly }: { onJoined: () => void; rea
               )}
               {party.religion && (
                 <span className="text-xs px-2 py-0.5 rounded-full border border-border-primary text-text-secondary">
-                  {party.religion}
+                  {party.religion_display ?? party.religion}
                 </span>
               )}
             </div>

@@ -42,7 +42,7 @@ export default async function DashboardPage() {
           <CharacterCard
             characterName={profile.character_name}
             ethnicity={profile.ethnicity}
-            religion={profile.religion}
+            religion={profile.religion_display ?? profile.religion}
             bio={profile.bio}
           />
           <NoPartyPrompt />
