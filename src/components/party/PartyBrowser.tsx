@@ -18,7 +18,7 @@ interface PartyWithCount {
   member_count: number
 }
 
-export function PartyBrowser({ onJoined }: { onJoined: () => void }) {
+export function PartyBrowser({ onJoined, readOnly }: { onJoined: () => void; readOnly?: boolean }) {
   const { user } = useAuth()
   const [parties, setParties] = useState<PartyWithCount[]>([])
   const [index, setIndex] = useState(0)
@@ -170,13 +170,15 @@ export function PartyBrowser({ onJoined }: { onJoined: () => void }) {
           ›
         </button>
 
-        <AeroButton
-          onClick={() => joinParty(party.id)}
-          loading={joining}
-          className="flex-1"
-        >
-          Join {party.name}
-        </AeroButton>
+        {!readOnly && (
+          <AeroButton
+            onClick={() => joinParty(party.id)}
+            loading={joining}
+            className="flex-1"
+          >
+            Join {party.name}
+          </AeroButton>
+        )}
       </div>
     </div>
   )

@@ -37,7 +37,7 @@ function PartyHubContent() {
           wash="green"
           subtitle="Your party's command centre."
         />
-        <FixedWidthContainer className="py-10">
+        <FixedWidthContainer className="py-10 space-y-6">
           <PartyDetails
             party={party}
             members={members}
@@ -45,6 +45,10 @@ function PartyHubContent() {
             isOwner={isOwner}
             onRefetch={refetch}
           />
+          <AeroPanel>
+            <h3 className="naira-header mb-4">All Parties</h3>
+            <PartyBrowser onJoined={refetch} readOnly />
+          </AeroPanel>
         </FixedWidthContainer>
       </>
     )
