@@ -127,24 +127,20 @@ export function CreatePartyForm() {
       return
     }
 
-    // Auto-generate wiki stubs
-    try {
-      await fetch('/api/wiki/auto-generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          partyId: party.id,
-          partyName: name.toUpperCase(),
-          fullName,
-          leaderName,
-          color,
-          ethnicity,
-          religion,
-        }),
-      })
-    } catch {
-      // Non-critical
-    }
+    // Auto-generate wiki stubs (fire-and-forget)
+    fetch('/api/wiki/auto-generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        partyId: party.id,
+        partyName: name.toUpperCase(),
+        fullName,
+        leaderName,
+        color,
+        ethnicity,
+        religion,
+      }),
+    }).catch(() => {})
 
     router.push('/dashboard')
     router.refresh()
