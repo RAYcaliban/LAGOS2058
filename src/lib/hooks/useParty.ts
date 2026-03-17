@@ -19,6 +19,8 @@ interface Party {
   owner_id: string | null
   ethnicity: string | null
   religion: string | null
+  description: string | null
+  logo_url: string | null
 }
 
 export function useParty(partyId: string | null | undefined, userId: string | null | undefined) {

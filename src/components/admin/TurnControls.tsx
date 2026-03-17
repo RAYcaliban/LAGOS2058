@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AeroButton } from '@/components/ui/AeroButton'
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { ConfirmDialog } from './ConfirmDialog'
+import { PC_HOARDING_CAP } from '@/lib/constants/actions'
 
 interface GameState {
   id: string
@@ -143,7 +144,7 @@ export function TurnControls({ gameState, onUpdate, onAdvanceTurn, onInitPartySt
       <ConfirmDialog
         open={confirmAction === 'init'}
         title="Initialize Party States"
-        message={`This will copy each party's latest state to Turn ${gameState.turn}, adding PC income (capped at ${18}). Continue?`}
+        message={`This will copy each party's latest state to Turn ${gameState.turn}, adding PC income (capped at ${PC_HOARDING_CAP}). Continue?`}
         confirmLabel="Initialize"
         onConfirm={handleConfirm}
         onCancel={() => setConfirmAction(null)}

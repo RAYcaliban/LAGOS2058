@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { verifyGMAccess } from '@/lib/supabase/admin-guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PC_INCOME_PER_TURN, PC_HOARDING_CAP } from '@/lib/constants/actions'
+import { calcPartyIncome, PC_HOARDING_CAP } from '@/lib/constants/actions'
 
 export async function POST(request: Request) {
   const auth = await verifyGMAccess()
@@ -16,6 +16,17 @@ export async function POST(request: Request) {
   const { data: parties, error: partyError } = await admin.from('parties').select('id')
   if (partyError) return NextResponse.json({ error: partyError.message }, { status: 500 })
 
+  // Count members per party
+  const { data: memberCounts } = await admin
+    .from('profiles')
+    .select('party_id')
+    .not('party_id', 'is', null)
+
+  const countByParty: Record<string, number> = {}
+  for (const row of memberCounts ?? []) {
+    if (row.party_id) countByParty[row.party_id] = (countByParty[row.party_id] ?? 0) + 1
+  }
+
   let initialized = 0
 
   for (const party of parties ?? []) {
@@ -28,9 +39,11 @@ export async function POST(request: Request) {
       .limit(1)
       .maybeSingle()
 
+    const members = countByParty[party.id] ?? 1
+    const income = calcPartyIncome(members)
     const newPC = latest
-      ? Math.min(latest.pc + PC_INCOME_PER_TURN, PC_HOARDING_CAP)
-      : PC_INCOME_PER_TURN
+      ? Math.min(latest.pc + income, PC_HOARDING_CAP)
+      : income
 
     const { error } = await admin.from('party_state').upsert(
       {

@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { AeroPanel } from '@/components/ui/AeroPanel'
 import { AeroButton } from '@/components/ui/AeroButton'
 import { TransferOwnershipModal } from './TransferOwnershipModal'
+import { EditPartyModal } from './EditPartyModal'
 
 interface Member {
   id: string
@@ -21,6 +22,8 @@ interface Party {
   color: string
   leader_name: string | null
   owner_id: string | null
+  description: string | null
+  logo_url: string | null
 }
 
 interface PartyDetailsProps {
@@ -33,6 +36,7 @@ interface PartyDetailsProps {
 
 export function PartyDetails({ party, members, userId, isOwner, onRefetch }: PartyDetailsProps) {
   const [showTransfer, setShowTransfer] = useState(false)
+  const [showEdit, setShowEdit] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const router = useRouter()
 
@@ -52,19 +56,40 @@ export function PartyDetails({ party, members, userId, isOwner, onRefetch }: Par
   return (
     <AeroPanel>
       <div className="flex items-center gap-4 mb-4">
-        <div
-          className="w-14 h-14 rounded-lg flex items-center justify-center font-display font-bold text-lg"
-          style={{ backgroundColor: party.color, color: '#fff' }}
-        >
-          {party.name}
-        </div>
-        <div>
+        {party.logo_url ? (
+          <img
+            src={party.logo_url}
+            alt={`${party.name} logo`}
+            className="w-14 h-14 rounded-lg object-cover border border-border-primary"
+          />
+        ) : (
+          <div
+            className="w-14 h-14 rounded-lg flex items-center justify-center font-display font-bold text-lg"
+            style={{ backgroundColor: party.color, color: '#fff' }}
+          >
+            {party.name}
+          </div>
+        )}
+        <div className="flex-1">
           <h2 className="text-xl font-bold">{party.full_name}</h2>
           {party.leader_name && (
             <p className="text-sm text-text-secondary">Led by {party.leader_name}</p>
           )}
         </div>
+        {isOwner && (
+          <AeroButton
+            variant="ghost"
+            onClick={() => setShowEdit(true)}
+            className="text-xs"
+          >
+            Edit Party
+          </AeroButton>
+        )}
       </div>
+
+      {party.description && (
+        <p className="text-sm text-text-secondary mb-4">{party.description}</p>
+      )}
 
       <div className="glow-line mb-4" />
 
@@ -128,6 +153,18 @@ export function PartyDetails({ party, members, userId, isOwner, onRefetch }: Par
           members={members.filter((m) => m.id !== userId)}
           onClose={() => setShowTransfer(false)}
           onTransferred={onRefetch}
+        />
+      )}
+
+      {showEdit && (
+        <EditPartyModal
+          party={party}
+          userId={userId}
+          onClose={() => setShowEdit(false)}
+          onSaved={() => {
+            onRefetch()
+            setShowEdit(false)
+          }}
         />
       )}
     </AeroPanel>
