@@ -81,6 +81,7 @@ interface ActionBuilderProps {
   pcAvailable: number
   totalPCSpent: number
   onActionCreated: () => void
+  submissionOpen?: boolean
   onSave?: (action: {
     action_type: string
     params: Record<string, unknown>
@@ -92,7 +93,7 @@ interface ActionBuilderProps {
   }) => Promise<void>
 }
 
-export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActionCreated, onSave }: ActionBuilderProps) {
+export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActionCreated, submissionOpen = true, onSave }: ActionBuilderProps) {
   const [actionType, setActionType] = useState('')
   const [params, setParams] = useState<Record<string, unknown>>({})
   const [targetLgas, setTargetLgas] = useState<string[]>([])
@@ -173,8 +174,14 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
 
   return (
     <AeroPanel>
-      <h2 className="naira-header mb-3">Create Action</h2>
+      <h2 className="naira-header mb-3">{submissionOpen ? 'Create Action' : 'Preview Actions'}</h2>
       <div className="glow-line mb-4" />
+
+      {!submissionOpen && (
+        <div className="rounded border border-aero-500/30 bg-aero-500/5 px-3 py-2 text-xs text-aero-400 mb-4">
+          Submissions are currently closed. You can preview action forms below but cannot save or submit.
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Form */}
@@ -200,19 +207,21 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
           )}
 
           {FormComponent && (
-            <FormComponent
-              params={params}
-              onParamsChange={setParams}
-              targetLgas={targetLgas}
-              onTargetLgasChange={setTargetLgas}
-              targetAzs={targetAzs}
-              onTargetAzsChange={setTargetAzs}
-              language={language}
-              onLanguageChange={setLanguage}
-              description={description}
-              onDescriptionChange={setDescription}
-              partyId={partyId}
-            />
+            <div className={!submissionOpen ? 'pointer-events-none opacity-60' : ''}>
+              <FormComponent
+                params={params}
+                onParamsChange={setParams}
+                targetLgas={targetLgas}
+                onTargetLgasChange={setTargetLgas}
+                targetAzs={targetAzs}
+                onTargetAzsChange={setTargetAzs}
+                language={language}
+                onLanguageChange={setLanguage}
+                description={description}
+                onDescriptionChange={setDescription}
+                partyId={partyId}
+              />
+            </div>
           )}
 
           {error && (
@@ -221,7 +230,7 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
             </div>
           )}
 
-          {actionType && (
+          {actionType && submissionOpen && (
             <div className="flex gap-3">
               <AeroButton onClick={handleSaveDraft} loading={saving} disabled={!actionType}>
                 Save as Draft

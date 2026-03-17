@@ -64,15 +64,14 @@ function ActionsContent() {
         )
       })()}
 
-      {isOwner && (
-        <ActionBuilder
-          partyId={profile.party_id}
-          turn={currentTurn}
-          pcAvailable={pcAvailable}
-          totalPCSpent={totalPCSpent}
-          onActionCreated={refetch}
-        />
-      )}
+      <ActionBuilder
+        partyId={profile.party_id}
+        turn={currentTurn}
+        pcAvailable={pcAvailable}
+        totalPCSpent={totalPCSpent}
+        onActionCreated={refetch}
+        submissionOpen={(gameState?.submission_open ?? false) && isOwner}
+      />
 
       <ActionQueue
         actions={actions}
