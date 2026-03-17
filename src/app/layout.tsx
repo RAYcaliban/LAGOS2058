@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/react'
 import { AeroNav } from '@/components/layout/AeroNav'
 import { Footer } from '@/components/layout/Footer'
 import './globals.css'
@@ -31,6 +32,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <div className="scanlines" />
+        <Analytics />
       </body>
     </html>
   )
