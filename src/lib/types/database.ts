@@ -375,6 +375,9 @@ export type Database = {
           slug: string
           title: string
           updated_at: string
+          approved: boolean
+          approved_by: string | null
+          approved_revision_id: string | null
         }
         Insert: {
           content?: string
@@ -386,6 +389,9 @@ export type Database = {
           slug: string
           title: string
           updated_at?: string
+          approved?: boolean
+          approved_by?: string | null
+          approved_revision_id?: string | null
         }
         Update: {
           content?: string
@@ -397,6 +403,9 @@ export type Database = {
           slug?: string
           title?: string
           updated_at?: string
+          approved?: boolean
+          approved_by?: string | null
+          approved_revision_id?: string | null
         }
         Relationships: [
           {
@@ -411,6 +420,54 @@ export type Database = {
             columns: ["party_id"]
             isOneToOne: false
             referencedRelation: "parties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wiki_revisions: {
+        Row: {
+          id: string
+          wiki_page_id: string
+          title: string
+          content: string
+          edited_by: string | null
+          revision_number: number
+          created_at: string
+          edit_summary: string | null
+        }
+        Insert: {
+          id?: string
+          wiki_page_id: string
+          title: string
+          content: string
+          edited_by?: string | null
+          revision_number?: number
+          created_at?: string
+          edit_summary?: string | null
+        }
+        Update: {
+          id?: string
+          wiki_page_id?: string
+          title?: string
+          content?: string
+          edited_by?: string | null
+          revision_number?: number
+          created_at?: string
+          edit_summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wiki_revisions_wiki_page_id_fkey"
+            columns: ["wiki_page_id"]
+            isOneToOne: false
+            referencedRelation: "wiki_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wiki_revisions_edited_by_fkey"
+            columns: ["edited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

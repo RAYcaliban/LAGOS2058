@@ -30,15 +30,28 @@ export async function PATCH(request: Request) {
 
   const admin = createAdminClient()
 
-  // Use raw rpc or manual update since approved isn't in generated types
-  const updateFields: Record<string, unknown> = {
-    approved,
-    approved_by: approved ? auth.userId : null,
+  let approvedRevisionId: string | null = null
+
+  if (approved) {
+    // Find the latest revision for this page and set it as the approved revision
+    const { data: latestRev } = await admin
+      .from('wiki_revisions')
+      .select('id')
+      .eq('wiki_page_id', id)
+      .order('revision_number', { ascending: false })
+      .limit(1)
+      .single()
+
+    approvedRevisionId = latestRev?.id ?? null
   }
 
   const { error } = await admin
     .from('wiki_pages')
-    .update(updateFields as never)
+    .update({
+      approved,
+      approved_by: approved ? auth.userId : null,
+      approved_revision_id: approvedRevisionId,
+    })
     .eq('id', id)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

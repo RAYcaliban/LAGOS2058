@@ -11,6 +11,7 @@ import { ScandalHistory } from '@/components/dashboard/ScandalHistory'
 import { CharacterCard } from '@/components/dashboard/CharacterCard'
 import { NoPartyPrompt } from '@/components/dashboard/NoPartyPrompt'
 import { ReadOnlyPartyBrowser } from '@/components/party/ReadOnlyPartyBrowser'
+import { PartyWikiPages } from '@/components/dashboard/PartyWikiPages'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -75,6 +76,21 @@ export default async function DashboardPage() {
     .eq('id', profile.party_id)
     .single()
 
+  // Get party wiki pages
+  const { data: wikiPagesData } = await supabase
+    .from('wiki_pages')
+    .select('slug, title, page_type, updated_at')
+    .eq('party_id', profile.party_id)
+    .order('updated_at', { ascending: false })
+    .limit(10)
+
+  const wikiPages = (wikiPagesData ?? []).map((wp) => ({
+    slug: wp.slug,
+    title: wp.title,
+    pageType: wp.page_type,
+    updatedAt: wp.updated_at,
+  }))
+
   return (
     <>
       <PageHeader
@@ -104,6 +120,11 @@ export default async function DashboardPage() {
         <ActionHistory actionHistory={(partyState?.action_history ?? []) as Record<string, unknown>[]} />
         <ScandalHistory scandalHistory={(partyState?.scandal_history ?? []) as Record<string, unknown>[]} />
       </div>
+
+      <PartyWikiPages
+        pages={wikiPages}
+        partyName={party?.name ?? 'your party'}
+      />
 
       <ReadOnlyPartyBrowser />
     </FixedWidthContainer>

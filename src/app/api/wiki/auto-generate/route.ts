@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { slugifyTitle } from '@/lib/utils/slugify'
 
 export async function POST(request: Request) {
   try {
@@ -31,16 +32,26 @@ ${bio ? `## Background\n\n${bio}` : '## Background\n\n*Character background to b
 *Positions will be updated as manifesto and campaign actions are submitted.*
 `
 
-      const { error } = await supabase.from('wiki_pages').insert({
+      const { data: inserted, error } = await supabase.from('wiki_pages').insert({
         slug: `character-${slug}`,
         title: characterName,
         content: characterContent,
         party_id: null,
         page_type: 'character',
-      })
+      }).select('id').single()
 
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
+      }
+
+      // Create initial revision
+      if (inserted) {
+        await supabase.from('wiki_revisions').insert({
+          wiki_page_id: inserted.id,
+          title: characterName,
+          content: characterContent,
+          revision_number: 1,
+        })
       }
 
       return NextResponse.json({ success: true, pages: [`character-${slug}`] })
@@ -53,8 +64,8 @@ ${bio ? `## Background\n\n${bio}` : '## Background\n\n*Character background to b
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const partySlug = partyName.toLowerCase().replace(/\s+/g, '-')
-    const leaderSlug = leaderName.toLowerCase().replace(/\s+/g, '-')
+    const partySlug = slugifyTitle(partyName)
+    const leaderSlug = slugifyTitle(leaderName)
 
     // Party wiki page
     const partyContent = `# ${fullName} (${partyName})
@@ -112,10 +123,22 @@ The **${fullName}** is a political party competing in the LAGOS 2058 election.
       },
     ]
 
-    const { error } = await supabase.from('wiki_pages').insert(pages)
+    const { data: inserted, error } = await supabase.from('wiki_pages').insert(pages).select('id, title, content')
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    // Create initial revisions for each page
+    if (inserted?.length) {
+      await supabase.from('wiki_revisions').insert(
+        inserted.map((p: { id: string; title: string; content: string }) => ({
+          wiki_page_id: p.id,
+          title: p.title,
+          content: p.content,
+          revision_number: 1,
+        }))
+      )
     }
 
     return NextResponse.json({ success: true, pages: pages.map((p) => p.slug) })

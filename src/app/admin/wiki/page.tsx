@@ -17,6 +17,8 @@ interface WikiPageRow {
 export default function AdminWikiPage() {
   const { data, refetch } = useAdminFetch<{ pages: WikiPageRow[] }>('/api/admin/wiki')
   const [loading, setLoading] = useState<string | null>(null)
+  const [backfilling, setBackfilling] = useState(false)
+  const [backfillResult, setBackfillResult] = useState<string | null>(null)
 
   const pages = data?.pages ?? []
   const pendingCount = pages.filter((p) => !p.approved).length
@@ -32,16 +34,47 @@ export default function AdminWikiPage() {
     refetch()
   }
 
+  async function handleBackfill() {
+    setBackfilling(true)
+    setBackfillResult(null)
+    try {
+      const res = await fetch('/api/admin/wiki/backfill', { method: 'POST' })
+      const data = await res.json()
+      if (data.error) {
+        setBackfillResult(`Error: ${data.error}`)
+      } else {
+        const { parties, characters } = data.created
+        setBackfillResult(`Created ${parties} party page${parties !== 1 ? 's' : ''} and ${characters} character page${characters !== 1 ? 's' : ''}.`)
+        refetch()
+      }
+    } catch {
+      setBackfillResult('Failed to backfill')
+    }
+    setBackfilling(false)
+  }
+
   return (
     <div className="p-6 space-y-6">
       <div>
         <h1 className="naira-header mb-1">Wiki Management</h1>
         <div className="glow-line max-w-xs mb-2" />
-        {pendingCount > 0 && (
-          <p className="text-sm text-warning">
-            {pendingCount} article{pendingCount !== 1 ? 's' : ''} pending approval
-          </p>
-        )}
+        <div className="flex items-center gap-4 flex-wrap">
+          {pendingCount > 0 && (
+            <p className="text-sm text-warning">
+              {pendingCount} article{pendingCount !== 1 ? 's' : ''} pending approval
+            </p>
+          )}
+          <button
+            onClick={handleBackfill}
+            disabled={backfilling}
+            className="text-xs px-3 py-1.5 rounded border border-aero-500/30 text-aero-400 hover:bg-aero-500/10 transition-colors disabled:opacity-50"
+          >
+            {backfilling ? 'Backfilling...' : 'Backfill Missing Pages'}
+          </button>
+          {backfillResult && (
+            <span className="text-xs text-text-muted">{backfillResult}</span>
+          )}
+        </div>
       </div>
 
       <AeroPanel>
@@ -78,17 +111,35 @@ export default function AdminWikiPage() {
                     {new Date(page.updated_at).toLocaleDateString()}
                   </td>
                   <td className="py-2 px-3">
-                    <button
-                      onClick={() => toggleApproval(page.id, !page.approved)}
-                      disabled={loading === page.id}
-                      className={`text-xs px-2 py-1 rounded border transition-colors ${
-                        page.approved
-                          ? 'border-danger/30 text-danger hover:bg-danger/10'
-                          : 'border-success/30 text-success hover:bg-success/10'
-                      } disabled:opacity-50`}
-                    >
-                      {loading === page.id ? '...' : page.approved ? 'Revoke' : 'Approve'}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={`/wiki/${page.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-aero-400 hover:underline"
+                      >
+                        View
+                      </a>
+                      <a
+                        href={`/wiki/${page.slug}/edit`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-aero-400 hover:underline"
+                      >
+                        Edit
+                      </a>
+                      <button
+                        onClick={() => toggleApproval(page.id, !page.approved)}
+                        disabled={loading === page.id}
+                        className={`text-xs px-2 py-1 rounded border transition-colors ${
+                          page.approved
+                            ? 'border-danger/30 text-danger hover:bg-danger/10'
+                            : 'border-success/30 text-success hover:bg-success/10'
+                        } disabled:opacity-50`}
+                      >
+                        {loading === page.id ? '...' : page.approved ? 'Revoke' : 'Approve'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

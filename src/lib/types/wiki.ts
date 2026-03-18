@@ -9,7 +9,7 @@
 // Wiki page types
 // ---------------------------------------------------------------------------
 
-export type WikiPageType = 'party' | 'character' | 'event' | 'lore' | 'general';
+export type WikiPageType = 'party' | 'character' | 'event' | 'lore' | 'general' | 'organization' | 'location' | 'institution';
 
 // ---------------------------------------------------------------------------
 // Editor info snapshot
@@ -83,4 +83,28 @@ export interface WikiPageUpdate {
   content?: string;
   partyId?: string | null;
   pageType?: WikiPageType;
+}
+
+// ---------------------------------------------------------------------------
+// Wiki page with approval metadata (used on article view pages)
+// ---------------------------------------------------------------------------
+
+export interface WikiPageWithApproval extends WikiPage {
+  approved: boolean;
+  approvedRevisionId: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Wiki revision (version history entry)
+// ---------------------------------------------------------------------------
+
+export interface WikiRevision {
+  id: string;
+  wikiPageId: string;
+  title: string;
+  content: string;
+  editedBy: WikiEditor | null;
+  revisionNumber: number;
+  createdAt: string;
+  editSummary: string | null;
 }

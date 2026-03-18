@@ -341,6 +341,492 @@
     background: #006600;
     color: white;
   }
+
+  /* ── Wiki — Retro Early-2000s Wikipedia Aesthetic ── */
+  .wiki-layout {
+    background: #f8f4ec;
+    color: #202122;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+  .wiki-layout ::selection {
+    background: rgba(51, 102, 204, 0.25);
+  }
+  .wiki-layout a {
+    color: #0645ad;
+    text-decoration: none;
+  }
+  .wiki-layout a:visited {
+    color: #0b0080;
+  }
+  .wiki-layout a:hover {
+    text-decoration: underline;
+  }
+
+  /* Wiki site banner */
+  .wiki-banner {
+    background: #f0e8d8;
+    border-bottom: 1px solid #a7a28b;
+    padding: 10px 0;
+  }
+  .wiki-banner-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .wiki-banner-title {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: #006600;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .wiki-banner-subtitle {
+    font-size: 0.7rem;
+    color: #666;
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+  .wiki-banner nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 0.8125rem;
+    flex-wrap: wrap;
+  }
+  .wiki-banner nav a {
+    padding: 2px 6px;
+  }
+  .wiki-banner nav .wiki-sep {
+    color: #a7a28b;
+    font-size: 0.7rem;
+  }
+  .wiki-search-input {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.8125rem;
+    padding: 3px 8px;
+    border: 1px solid #a7a28b;
+    background: #fff;
+    color: #202122;
+    width: 180px;
+  }
+  .wiki-search-input:focus {
+    outline: none;
+    border-color: #3366cc;
+  }
+  .wiki-search-btn {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border: 1px solid #a7a28b;
+    background: #ddd;
+    color: #202122;
+    cursor: pointer;
+  }
+  .wiki-search-btn:hover {
+    background: #ccc;
+  }
+
+  /* Wiki content area */
+  .wiki-body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 20px 40px;
+  }
+
+  /* Article heading */
+  .wiki-article-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    border-bottom: 1px solid #a2a9b1;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+    color: #000;
+  }
+
+  /* Table of contents */
+  .wiki-toc {
+    border: 1px solid #a2a9b1;
+    background: #f8f9fa;
+    padding: 8px 14px;
+    display: inline-block;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    min-width: 200px;
+  }
+  .wiki-toc-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+  }
+  .wiki-toc ol {
+    margin: 0;
+    padding-left: 1.5em;
+    list-style: decimal;
+  }
+  .wiki-toc ol ol {
+    list-style: decimal;
+    padding-left: 1.5em;
+  }
+  .wiki-toc li {
+    margin: 2px 0;
+  }
+  .wiki-toc a {
+    color: #0645ad;
+  }
+
+  /* Wiki infobox — floated right */
+  .wiki-infobox {
+    float: right;
+    width: 280px;
+    margin: 0 0 12px 20px;
+    border: 1px solid #a2a9b1;
+    background: #f8f9fa;
+    font-size: 0.85rem;
+    border-collapse: collapse;
+  }
+  .wiki-infobox-header {
+    background: #e8e0d0;
+    text-align: center;
+    padding: 8px 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    border-bottom: 1px solid #a2a9b1;
+  }
+  .wiki-infobox-color-bar {
+    height: 4px;
+    width: 100%;
+  }
+  .wiki-infobox-row {
+    display: flex;
+    border-bottom: 1px solid #e0ddd5;
+  }
+  .wiki-infobox-label {
+    flex: 0 0 100px;
+    padding: 4px 8px;
+    font-weight: bold;
+    background: #f0ede5;
+    font-size: 0.8rem;
+    color: #555;
+  }
+  .wiki-infobox-value {
+    flex: 1;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+
+  /* Wiki tables */
+  .wiki-table {
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.875rem;
+  }
+  .wiki-table th,
+  .wiki-table td {
+    border: 1px solid #a2a9b1;
+    padding: 5px 8px;
+    text-align: left;
+  }
+  .wiki-table th {
+    background: #e8e0d0;
+    font-weight: bold;
+  }
+  .wiki-table tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+
+  /* Wiki article content — markdown overrides */
+  .wiki-content h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    border-bottom: 1px solid #a2a9b1;
+    padding-bottom: 2px;
+    margin: 24px 0 8px;
+    color: #000;
+  }
+  .wiki-content h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 18px 0 6px;
+    color: #000;
+  }
+  .wiki-content p {
+    margin: 8px 0;
+  }
+  .wiki-content ul, .wiki-content ol {
+    margin: 8px 0;
+    padding-left: 2em;
+  }
+  .wiki-content li {
+    margin: 2px 0;
+  }
+  .wiki-content blockquote {
+    border-left: 3px solid #a2a9b1;
+    padding: 4px 12px;
+    margin: 12px 0;
+    background: #f8f9fa;
+    color: #555;
+    font-style: italic;
+  }
+  .wiki-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: #f0ede5;
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+  .wiki-content strong {
+    font-weight: bold;
+  }
+  .wiki-content hr {
+    border: 0;
+    border-top: 1px solid #a2a9b1;
+    margin: 16px 0;
+  }
+
+  /* Category footer */
+  .wiki-category-footer {
+    border-top: 1px dotted #a2a9b1;
+    margin-top: 24px;
+    padding-top: 8px;
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  /* Approval banners */
+  .wiki-canon-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border: 1px solid #2e7d32;
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  .wiki-pending-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border: 1px solid #999;
+    background: #f0f0f0;
+    color: #666;
+  }
+  .wiki-approval-warning {
+    background: #fff8e1;
+    border: 1px solid #f9a825;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #5d4037;
+  }
+  .wiki-approval-warning a {
+    color: #0645ad;
+    font-weight: bold;
+  }
+
+  /* Edit page */
+  .wiki-edit-textarea {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    width: 100%;
+    min-height: 400px;
+    padding: 12px;
+    border: 1px solid #a2a9b1;
+    background: #fff;
+    color: #202122;
+    resize: vertical;
+  }
+  .wiki-edit-textarea:focus {
+    outline: none;
+    border-color: #3366cc;
+  }
+  .wiki-edit-input {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1rem;
+    padding: 4px 8px;
+    border: 1px solid #a2a9b1;
+    background: #fff;
+    color: #202122;
+    width: 100%;
+  }
+  .wiki-edit-input:focus {
+    outline: none;
+    border-color: #3366cc;
+  }
+  .wiki-edit-btn {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.85rem;
+    padding: 6px 16px;
+    border: 1px solid #a2a9b1;
+    background: #ddd;
+    color: #202122;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .wiki-edit-btn:hover {
+    background: #ccc;
+  }
+  .wiki-edit-btn-primary {
+    background: #3366cc;
+    border-color: #2a56b0;
+    color: #fff;
+  }
+  .wiki-edit-btn-primary:hover {
+    background: #2a56b0;
+  }
+
+  /* Index table */
+  .wiki-index-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .wiki-index-table th,
+  .wiki-index-table td {
+    border: 1px solid #c8c8c8;
+    padding: 5px 10px;
+    text-align: left;
+  }
+  .wiki-index-table th {
+    background: #e8e0d0;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .wiki-index-table tr:nth-child(even) {
+    background: #f5f1e8;
+  }
+  .wiki-index-table tr:hover {
+    background: #eee8d8;
+  }
+
+  /* Portal boxes for main page */
+  .wiki-portal-box {
+    border: 1px solid #a2a9b1;
+    background: #f8f9fa;
+    margin-bottom: 12px;
+  }
+  .wiki-portal-box-header {
+    background: #e8e0d0;
+    padding: 6px 12px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #a2a9b1;
+  }
+  .wiki-portal-box-body {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Tab navigation for article types */
+  .wiki-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #a2a9b1;
+    margin-bottom: 16px;
+  }
+  .wiki-tab {
+    padding: 6px 14px;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: transparent;
+    color: #0645ad;
+    margin-bottom: -1px;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .wiki-tab:hover {
+    background: #f0ede5;
+  }
+  .wiki-tab-active {
+    background: #f8f4ec;
+    border-color: #a2a9b1;
+    color: #000;
+    font-weight: bold;
+  }
+
+  /* Metadata footer */
+  .wiki-meta-footer {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 20px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+  }
+
+  /* Diff view */
+  .wiki-diff-container {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    border: 1px solid #a2a9b1;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  .wiki-diff-header {
+    display: flex;
+    background: #e8e0d0;
+    border-bottom: 1px solid #a2a9b1;
+    font-weight: bold;
+    font-size: 0.75rem;
+  }
+  .wiki-diff-header > div {
+    flex: 1;
+    padding: 6px 10px;
+  }
+  .wiki-diff-line {
+    display: flex;
+    border-bottom: 1px solid #eee;
+  }
+  .wiki-diff-line:last-child {
+    border-bottom: none;
+  }
+  .wiki-diff-line-num {
+    width: 40px;
+    text-align: right;
+    padding: 1px 6px;
+    color: #999;
+    background: #f5f1e8;
+    border-right: 1px solid #ddd;
+    user-select: none;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+  }
+  .wiki-diff-line-content {
+    flex: 1;
+    padding: 1px 8px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .wiki-diff-added {
+    background: #e6ffed;
+  }
+  .wiki-diff-removed {
+    background: #ffeef0;
+  }
+  .wiki-diff-added .wiki-diff-line-num {
+    background: #cdffd8;
+  }
+  .wiki-diff-removed .wiki-diff-line-num {
+    background: #ffdce0;
+  }
 }
 
 /* ── Leaflet overrides ── */
