@@ -483,44 +483,134 @@
     color: #0645ad;
   }
 
-  /* Wiki infobox — floated right */
+  /* Wiki infobox — table-based, Wikipedia-faithful */
   .wiki-infobox {
     float: right;
-    width: 280px;
+    width: 22em;
     margin: 0 0 12px 20px;
     border: 1px solid #a2a9b1;
+    border-collapse: collapse;
     background: #f8f9fa;
     font-size: 0.85rem;
-    border-collapse: collapse;
+    line-height: 1.4;
   }
-  .wiki-infobox-header {
-    background: #e8e0d0;
-    text-align: center;
-    padding: 8px 10px;
-    font-weight: bold;
-    font-size: 1rem;
-    border-bottom: 1px solid #a2a9b1;
+  .wiki-infobox td,
+  .wiki-infobox th {
+    border-bottom: 1px solid #e0ddd5;
+    vertical-align: top;
+    padding: 4px 8px;
   }
-  .wiki-infobox-color-bar {
+  .wiki-infobox-colorbar {
     height: 4px;
-    width: 100%;
+    padding: 0 !important;
+    border: none !important;
   }
-  .wiki-infobox-row {
-    display: flex;
+  .wiki-infobox-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.05rem;
+    padding: 8px 10px !important;
+    background: #e8e0d0;
+  }
+  .wiki-infobox-subtitle {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.8rem;
+    background: #f0ede5;
+    padding: 4px 10px !important;
+    color: #555;
+  }
+  .wiki-infobox-image {
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+  }
+  .wiki-infobox-caption {
+    text-align: center;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: #555;
+    padding: 2px 10px 8px !important;
     border-bottom: 1px solid #e0ddd5;
   }
-  .wiki-infobox-label {
-    flex: 0 0 100px;
-    padding: 4px 8px;
+  .wiki-infobox-section-header {
+    text-align: center;
     font-weight: bold;
-    background: #f0ede5;
     font-size: 0.8rem;
+    background: #e8e0d0;
+    padding: 4px 8px !important;
+    border-top: 1px solid #a2a9b1;
+  }
+  .wiki-infobox-label {
+    width: 40%;
+    font-weight: bold;
+    font-size: 0.8rem;
+    background: #f0ede5;
     color: #555;
   }
   .wiki-infobox-value {
-    flex: 1;
-    padding: 4px 8px;
     font-size: 0.8rem;
+  }
+  .wiki-infobox-value a {
+    color: #0645ad;
+  }
+
+  /* Wiki infobox editor */
+  .wiki-infobox-editor {
+    border: 1px solid #c8ccd1;
+    border-radius: 2px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .wiki-infobox-editor legend {
+    padding: 0 6px;
+  }
+  .wiki-infobox-editor-section {
+    border: 1px solid #e0ddd5;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: #fff;
+  }
+  .wiki-infobox-editor-field {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .wiki-infobox-editor-label {
+    width: 120px;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+  }
+  .wiki-infobox-editor-add-btn {
+    background: none;
+    border: none;
+    color: #0645ad;
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 2px 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    text-decoration: underline;
+  }
+  .wiki-infobox-editor-add-btn:hover {
+    color: #0b0080;
+  }
+  .wiki-infobox-editor-remove-btn {
+    background: none;
+    border: none;
+    color: #a00;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .wiki-infobox-editor-remove-btn:hover {
+    color: #d00;
   }
 
   /* Wiki tables */

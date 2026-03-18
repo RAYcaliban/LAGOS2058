@@ -8,11 +8,15 @@ import { WikiEditForm } from '@/components/wiki/WikiEditForm'
 import { WikiBreadcrumbs } from '@/components/wiki/WikiBreadcrumbs'
 import type { WikiPageType } from '@/lib/types/wiki'
 
+import type { InfoboxData } from '@/lib/types/wiki'
+
 interface PageData {
   title: string
   content: string
   partyId: string | null
+  partyColor: string | null
   pageType: string
+  infoboxData: InfoboxData | null
 }
 
 export default function WikiEditPage() {
@@ -77,7 +81,14 @@ export default function WikiEditPage() {
   return (
     <>
       <WikiBreadcrumbs pageType={page.pageType as WikiPageType} title={page.title} slug={slug} suffix="Edit" />
-      <WikiEditForm slug={slug} initialTitle={page.title} initialContent={page.content} />
+      <WikiEditForm
+        slug={slug}
+        initialTitle={page.title}
+        initialContent={page.content}
+        initialInfoboxData={page.infoboxData}
+        pageType={page.pageType as WikiPageType}
+        partyColor={page.partyColor}
+      />
     </>
   )
 }

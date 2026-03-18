@@ -3,16 +3,22 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { WikiArticleContent } from './WikiArticleContent'
+import { WikiInfoboxEditor } from './WikiInfoboxEditor'
+import type { WikiPageType, InfoboxData } from '@/lib/types/wiki'
 
 interface WikiEditFormProps {
   slug: string
   initialTitle: string
   initialContent: string
+  initialInfoboxData?: InfoboxData | null
+  pageType?: WikiPageType
+  partyColor?: string | null
 }
 
-export function WikiEditForm({ slug, initialTitle, initialContent }: WikiEditFormProps) {
+export function WikiEditForm({ slug, initialTitle, initialContent, initialInfoboxData, pageType, partyColor }: WikiEditFormProps) {
   const [title, setTitle] = useState(initialTitle)
   const [content, setContent] = useState(initialContent)
+  const [infoboxData, setInfoboxData] = useState<InfoboxData | null>(initialInfoboxData ?? null)
   const [editSummary, setEditSummary] = useState('')
   const [showPreview, setShowPreview] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -26,7 +32,7 @@ export function WikiEditForm({ slug, initialTitle, initialContent }: WikiEditFor
       const res = await fetch(`/api/wiki/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, editSummary: editSummary.trim() || undefined }),
+        body: JSON.stringify({ title, content, infoboxData, editSummary: editSummary.trim() || undefined }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -57,6 +63,15 @@ export function WikiEditForm({ slug, initialTitle, initialContent }: WikiEditFor
           className="wiki-edit-input"
         />
       </div>
+
+      {pageType && (
+        <WikiInfoboxEditor
+          pageType={pageType}
+          value={infoboxData}
+          onChange={setInfoboxData}
+          partyColor={partyColor}
+        />
+      )}
 
       <div style={{ marginBottom: 12 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>

@@ -7,7 +7,7 @@ import { WikiInfobox } from '@/components/wiki/WikiInfobox'
 import { WikiCategoryFooter } from '@/components/wiki/WikiCategoryFooter'
 import { WikiApprovalBanner } from '@/components/wiki/WikiApprovalBanner'
 import { WikiBreadcrumbs } from '@/components/wiki/WikiBreadcrumbs'
-import type { WikiPageType } from '@/lib/types/wiki'
+import type { WikiPageType, InfoboxData } from '@/lib/types/wiki'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -52,12 +52,21 @@ export default async function WikiArticlePage({ params, searchParams }: Props) {
     }
   }
 
-  // Build infobox fields
-  const infoFields: { label: string; value: string }[] = []
-  if (pageType === 'party' && party) {
-    if (party.leader_name) infoFields.push({ label: 'Leader', value: party.leader_name })
-    if (party.ethnicity) infoFields.push({ label: 'Ethnicity', value: party.ethnicity })
-    if (party.religion_display) infoFields.push({ label: 'Religion', value: party.religion_display })
+  // Build infobox data — use stored data or fallback for party pages
+  let infoboxData: InfoboxData | null = ((data as Record<string, unknown>).infobox_data as InfoboxData) ?? null
+  if (!infoboxData && pageType === 'party' && party) {
+    // Backward-compat: construct InfoboxData from joined party fields
+    const fields: { key: string; label: string; value: string }[] = []
+    if (party.full_name) fields.push({ key: 'full_name', label: 'Full name', value: party.full_name })
+    if (party.leader_name) fields.push({ key: 'leader', label: 'Leader', value: party.leader_name })
+    if (party.ethnicity) fields.push({ key: 'ethnicity', label: 'Ethnicity', value: party.ethnicity })
+    if (party.religion_display) fields.push({ key: 'religion', label: 'Religion', value: party.religion_display })
+    if (fields.length > 0) {
+      infoboxData = {
+        templateType: 'party',
+        sections: [{ heading: 'General', fields }],
+      }
+    }
   }
 
   return (
@@ -84,15 +93,11 @@ export default async function WikiArticlePage({ params, searchParams }: Props) {
       <h1 className="wiki-article-title">{displayTitle}</h1>
 
       {/* Infobox for pages with structured data */}
-      {(pageType === 'party' || pageType === 'character' || party) && (
-        <WikiInfobox
-          title={displayTitle}
-          pageType={pageType}
-          partyName={party?.name}
-          partyColor={party?.color}
-          fields={infoFields}
-        />
-      )}
+      <WikiInfobox
+        title={displayTitle}
+        partyColor={party?.color}
+        data={infoboxData}
+      />
 
       {/* Table of contents */}
       <WikiTableOfContents content={displayContent} />

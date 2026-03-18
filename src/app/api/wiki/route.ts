@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { title, content, pageType, partyId, editSummary } = await request.json()
+  const { title, content, pageType, partyId, editSummary, infoboxData } = await request.json()
 
   if (!title?.trim()) {
     return NextResponse.json({ error: 'Title is required' }, { status: 400 })
@@ -97,6 +97,7 @@ export async function POST(request: Request) {
       party_id: partyId || null,
       last_edited_by: user.id,
       approved: false,
+      infobox_data: infoboxData ?? null,
     })
     .select('id, slug')
     .single()
@@ -118,6 +119,7 @@ export async function POST(request: Request) {
       edited_by: user.id,
       edit_summary: editSummary?.trim() || 'Initial creation',
       revision_number: 1,
+      infobox_data: infoboxData ?? null,
     })
   }
 

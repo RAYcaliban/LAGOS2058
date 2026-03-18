@@ -35,6 +35,7 @@ export async function GET(
     partyEthnicity: party?.ethnicity ?? null,
     partyReligion: party?.religion_display ?? null,
     pageType: data.page_type,
+    infoboxData: (data as Record<string, unknown>).infobox_data ?? null,
     lastEditedBy: editor ? { id: editor.id, displayName: editor.display_name, avatarUrl: editor.avatar_url } : null,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
@@ -70,7 +71,7 @@ export async function PATCH(
   }
 
   // Permission check is enforced by RLS on wiki_pages update policy
-  const { title, content, editSummary } = await request.json()
+  const { title, content, editSummary, infoboxData } = await request.json()
   if (!title?.trim() || !content?.trim()) {
     return NextResponse.json({ error: 'Title and content are required' }, { status: 400 })
   }
@@ -98,6 +99,7 @@ export async function PATCH(
       edited_by: user.id,
       revision_number: nextRevision,
       edit_summary: editSummary?.trim() || null,
+      infobox_data: infoboxData !== undefined ? infoboxData : null,
     })
     .select('id')
     .single()
@@ -112,6 +114,10 @@ export async function PATCH(
     content,
     last_edited_by: user.id,
     updated_at: new Date().toISOString(),
+  }
+
+  if (infoboxData !== undefined) {
+    updateFields.infobox_data = infoboxData
   }
 
   // If was previously approved, mark as unapproved but keep the approved_revision_id

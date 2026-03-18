@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { WikiArticleContent } from '@/components/wiki/WikiArticleContent'
+import { WikiInfoboxEditor } from '@/components/wiki/WikiInfoboxEditor'
+import type { WikiPageType, InfoboxData } from '@/lib/types/wiki'
 
 const PAGE_TYPES = [
   { value: 'general', label: 'General' },
@@ -21,7 +23,8 @@ export default function WikiCreatePage() {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [pageType, setPageType] = useState('general')
+  const [pageType, setPageType] = useState<WikiPageType>('general')
+  const [infoboxData, setInfoboxData] = useState<InfoboxData | null>(null)
   const [showPreview, setShowPreview] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,6 +44,7 @@ export default function WikiCreatePage() {
           title: title.trim(),
           content: content.trim() || undefined,
           pageType,
+          infoboxData,
         }),
       })
       const data = await res.json()
@@ -83,7 +87,10 @@ export default function WikiCreatePage() {
         </label>
         <select
           value={pageType}
-          onChange={(e) => setPageType(e.target.value)}
+          onChange={(e) => {
+            setPageType(e.target.value as WikiPageType)
+            setInfoboxData(null) // Reset infobox when type changes
+          }}
           style={{
             fontFamily: "Georgia, 'Times New Roman', serif",
             fontSize: '0.85rem',
@@ -98,6 +105,12 @@ export default function WikiCreatePage() {
           ))}
         </select>
       </div>
+
+      <WikiInfoboxEditor
+        pageType={pageType}
+        value={infoboxData}
+        onChange={setInfoboxData}
+      />
 
       <div style={{ marginBottom: 12 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>

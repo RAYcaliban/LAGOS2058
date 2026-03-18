@@ -12,6 +12,20 @@
 export type WikiPageType = 'party' | 'character' | 'event' | 'lore' | 'general' | 'organization' | 'location' | 'institution';
 
 // ---------------------------------------------------------------------------
+// Infobox structured data
+// ---------------------------------------------------------------------------
+
+export interface InfoboxField { key: string; label: string; value: string }
+export interface InfoboxSection { heading: string; fields: InfoboxField[] }
+export interface InfoboxData {
+  templateType: WikiPageType
+  image?: string
+  imageCaption?: string
+  subtitle?: string
+  sections: InfoboxSection[]
+}
+
+// ---------------------------------------------------------------------------
 // Editor info snapshot
 // ---------------------------------------------------------------------------
 
@@ -47,6 +61,8 @@ export interface WikiPage {
   /** Profile of the last user to edit this page (null if unknown). */
   lastEditedBy: WikiEditor | null;
 
+  infoboxData: InfoboxData | null;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -76,6 +92,7 @@ export interface WikiPageCreate {
   content: string;
   partyId?: string | null;
   pageType: WikiPageType;
+  infoboxData?: InfoboxData | null;
 }
 
 export interface WikiPageUpdate {
@@ -83,6 +100,7 @@ export interface WikiPageUpdate {
   content?: string;
   partyId?: string | null;
   pageType?: WikiPageType;
+  infoboxData?: InfoboxData | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -103,6 +121,7 @@ export interface WikiRevision {
   wikiPageId: string;
   title: string;
   content: string;
+  infoboxData: InfoboxData | null;
   editedBy: WikiEditor | null;
   revisionNumber: number;
   createdAt: string;
