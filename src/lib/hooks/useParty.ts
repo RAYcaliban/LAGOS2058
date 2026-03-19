@@ -49,7 +49,7 @@ export function useParty(partyId: string | null | undefined, userId: string | nu
     setParty(partyRes.data)
     setMembers(membersRes.data ?? [])
     setLoading(false)
-  }, [partyId, supabase])
+  }, [partyId])
 
   // Show loading spinner when partyId changes (e.g. after joining a party)
   useEffect(() => {
