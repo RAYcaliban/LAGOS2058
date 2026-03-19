@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasInfoboxColumn } from '@/lib/wiki/infobox-column'
 
 export async function GET(
   request: Request,
@@ -10,6 +9,7 @@ export async function GET(
   const { slug } = await params
   const supabase = await createClient()
 
+  // select('*') returns only columns that exist — safe pre- and post-migration
   const { data, error } = await supabase
     .from('wiki_pages')
     .select('*, parties(name, full_name, color, leader_name, ethnicity, religion_display), profiles!wiki_pages_last_edited_by_fkey(id, display_name, avatar_url)')
@@ -36,7 +36,8 @@ export async function GET(
     partyEthnicity: party?.ethnicity ?? null,
     partyReligion: party?.religion_display ?? null,
     pageType: data.page_type,
-    infoboxData: (await hasInfoboxColumn()) ? (data.infobox_data ?? null) : null,
+    // infobox_data appears in select('*') only after migration — safe either way
+    infoboxData: ('infobox_data' in data) ? (data.infobox_data ?? null) : null,
     lastEditedBy: editor ? { id: editor.id, displayName: editor.display_name, avatarUrl: editor.avatar_url } : null,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
@@ -60,16 +61,19 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Get current page
+  // Get current page — use select('*') so we can detect if infobox_data column exists
   const { data: page, error: pageError } = await supabase
     .from('wiki_pages')
-    .select('id, party_id, page_type, approved')
+    .select('*')
     .eq('slug', slug)
     .single()
 
   if (pageError || !page) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
+
+  // Detect whether infobox_data column exists from the select('*') result
+  const dbHasInfobox = 'infobox_data' in page
 
   // Permission check is enforced by RLS on wiki_pages update policy
   const { title, content, editSummary, infoboxData } = await request.json()
@@ -130,8 +134,8 @@ export async function PATCH(
     return NextResponse.json({ error: updateError.message }, { status: 500 })
   }
 
-  // Persist infobox data if the column exists (post-migration)
-  if (infoboxData && await hasInfoboxColumn()) {
+  // Only write infobox_data if the column actually exists in the DB (confirmed by select('*'))
+  if (infoboxData && dbHasInfobox) {
     await admin.from('wiki_pages').update({ infobox_data: infoboxData }).eq('id', page.id)
     await admin.from('wiki_revisions').update({ infobox_data: infoboxData }).eq('id', revision.id)
   }

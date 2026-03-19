@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { slugifyTitle } from '@/lib/utils/slugify'
-import { hasInfoboxColumn } from '@/lib/wiki/infobox-column'
 
 const VALID_PAGE_TYPES = ['party', 'character', 'event', 'lore', 'general', 'organization', 'location', 'institution']
 
@@ -87,7 +86,7 @@ export async function POST(request: Request) {
   const admin = createAdminClient()
   const articleContent = content?.trim() || `# ${title.trim()}\n\n*This article is a stub. You can help by expanding it.*`
 
-  // Insert directly — catch unique constraint violation instead of check-then-insert
+  // Insert page — use select('*') so we can detect if infobox_data column exists
   const { data: page, error } = await admin
     .from('wiki_pages')
     .insert({
@@ -99,7 +98,7 @@ export async function POST(request: Request) {
       last_edited_by: user.id,
       approved: false,
     })
-    .select('id, slug')
+    .select('*')
     .single()
 
   if (error) {
@@ -109,6 +108,8 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  const dbHasInfobox = 'infobox_data' in page
 
   // Create initial revision
   if (page) {
@@ -121,8 +122,8 @@ export async function POST(request: Request) {
       revision_number: 1,
     }).select('id').single()
 
-    // Persist infobox data if the column exists (post-migration)
-    if (infoboxData && await hasInfoboxColumn()) {
+    // Only write infobox_data if the column actually exists in the DB (confirmed by select('*'))
+    if (infoboxData && dbHasInfobox) {
       await admin.from('wiki_pages').update({ infobox_data: infoboxData }).eq('id', page.id)
       if (rev) {
         await admin.from('wiki_revisions').update({ infobox_data: infoboxData }).eq('id', rev.id)
