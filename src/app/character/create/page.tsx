@@ -23,10 +23,11 @@ function CharacterCreateContent() {
   const router = useRouter()
 
   // If character already created, redirect to dashboard
+  useEffect(() => {
   if (profile?.character_name) {
     router.push('/dashboard')
-    return null
   }
+}, [profile?.character_name, router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -75,9 +76,7 @@ function CharacterCreateContent() {
 
     // Navigate first — refetchProfile() would set character_name, triggering
     // the redirect guard above and unmounting this component before push fires
-    router.push('/dashboard')
-    router.refresh()
-    refetchProfile()
+    window.location.href = '/dashboard'
   }
 
   return (
