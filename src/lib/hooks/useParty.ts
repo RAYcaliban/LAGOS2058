@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface PartyMember {
@@ -28,7 +28,7 @@ export function useParty(partyId: string | null | undefined, userId: string | nu
   const [party, setParty] = useState<Party | null>(null)
   const [members, setMembers] = useState<PartyMember[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   const refetch = useCallback(async () => {
     if (!partyId) {
@@ -39,8 +39,8 @@ export function useParty(partyId: string | null | undefined, userId: string | nu
     }
 
     const [partyRes, membersRes] = await Promise.all([
-      supabase.from('parties').select('*').eq('id', partyId).single(),
-      supabase
+      supabaseRef.current.from('parties').select('*').eq('id', partyId).single(),
+      supabaseRef.current
         .from('profiles')
         .select('id, display_name, character_name, avatar_url')
         .eq('party_id', partyId),
