@@ -26,22 +26,26 @@ function renderSegment(text: string) {
     <>
       {parts.map((part, i) => {
         if (i % 2 === 1) {
-          const [target, display] = part.includes('|') ? part.split('|', 2) : [part, part]
+          const hasPipe = part.includes('|')
+          const [target, display] = hasPipe ? part.split('|', 2) : [part, part]
           const trimmedTarget = target.trim()
           if (trimmedTarget.startsWith('w:')) {
-            const article = trimmedTarget.slice(2)
-            return <a key={i} href={`https://en.wikipedia.org/wiki/${encodeURIComponent(article)}`} target="_blank" rel="noopener noreferrer">{(display ?? article).trim()}</a>
-}
+            const article = trimmedTarget.slice(2).trim()
+            const label = hasPipe ? display.trim() : article
+            return <a key={i} href={`https://en.wikipedia.org/wiki/${encodeURIComponent(article)}`} target="_blank" rel="noopener noreferrer">{label}</a>
+          }
           if (trimmedTarget.startsWith('c:')) {
             const name = trimmedTarget.slice(2).trim()
             const slug = 'character-' + name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-            return <Link key={i} href={`/wiki/${slug}`}>{(display ?? name).trim()}</Link>
-}
+            const label = hasPipe ? display.trim() : name
+            return <Link key={i} href={`/wiki/${slug}`}>{label}</Link>
+          }
           if (trimmedTarget.startsWith('p:')) {
             const name = trimmedTarget.slice(2).trim()
             const slug = 'party-' + name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-            return <Link key={i} href={`/wiki/${slug}`}>{(display ?? name).trim()}</Link>
-}
+            const label = hasPipe ? display.trim() : name
+            return <Link key={i} href={`/wiki/${slug}`}>{label}</Link>
+          }
           const slug = trimmedTarget.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
           return <Link key={i} href={`/wiki/${slug}`}>{display.trim()}</Link>
         }
