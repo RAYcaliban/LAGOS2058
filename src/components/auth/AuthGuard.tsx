@@ -24,8 +24,14 @@ export function AuthGuard({ children, requireCharacter = false, requireParty = f
     }
 
     if (!profile) {
-      router.push('/character/create')
-      return
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="text-center space-y-3">
+        <div className="w-8 h-8 border-2 border-aero-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-sm text-text-secondary">Loading profile...</p>
+      </div>
+    </div>
+  )
     }
 
     if (requireGM && !isGM) {
