@@ -56,8 +56,7 @@ export function RegisterForm() {
       // Profile is auto-created by database trigger on auth.users insert.
       // If email confirmation is disabled, redirect directly.
       if (data.session) {
-        router.push('/character/create')
-        router.refresh()
+        window.location.href = '/character/create'
         return
       }
 
