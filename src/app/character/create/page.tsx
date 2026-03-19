@@ -71,6 +71,7 @@ function CharacterCreateContent() {
         religion,
         bio,
         slug,
+        userId: user.id,
       }),
     }).catch(() => {})
 
