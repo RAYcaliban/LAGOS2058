@@ -24,7 +24,7 @@ export function AuthGuard({ children, requireCharacter = false, requireParty = f
     }
 
     if (!profile) {
-      // Profile not yet created — redirect to setup
+      router.push('/character/create')
       return
     }
 
