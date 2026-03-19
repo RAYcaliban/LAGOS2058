@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface GameState {
@@ -15,11 +15,11 @@ interface GameState {
 export function useGameState() {
   const [gameState, setGameState] = useState<GameState | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   useEffect(() => {
     async function fetch() {
-      const { data } = await supabase
+      const { data } = await supabaseRef.current
         .from('game_state')
         .select('id, turn, phase, submission_open, deadline, announcements')
         .order('turn', { ascending: false })
@@ -29,7 +29,7 @@ export function useGameState() {
       setLoading(false)
     }
     fetch()
-  }, [supabase])
+  }, [])
 
   return { gameState, loading }
 }
