@@ -18,21 +18,36 @@ function getContrastColor(hex: string): string {
   return luminance > 0.5 ? '#000000' : '#ffffff'
 }
 
-/** Render [[wiki links]] in a value string. */
-function renderValue(value: string) {
-  const parts = value.split(/\[\[([^\]]+)\]\]/)
-  if (parts.length === 1) return value
+/** Render wiki links within a single line segment. */
+function renderSegment(text: string) {
+  const parts = text.split(/\[\[([^\]]+)\]\]/)
+  if (parts.length === 1) return text
   return (
     <>
       {parts.map((part, i) => {
         if (i % 2 === 1) {
-          // Inside [[ ]] — split on | for display vs slug
           const [target, display] = part.includes('|') ? part.split('|', 2) : [part, part]
           const slug = target.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
           return <Link key={i} href={`/wiki/${slug}`}>{display.trim()}</Link>
         }
         return part
       })}
+    </>
+  )
+}
+
+/** Render a value string, supporting <br> line breaks and [[wiki links]]. */
+function renderValue(value: string) {
+  const lines = value.split(/<br\s*\/?>/i)
+  if (lines.length === 1) return renderSegment(value)
+  return (
+    <>
+      {lines.map((line, li) => (
+        <React.Fragment key={li}>
+          {li > 0 && <br />}
+          {renderSegment(line)}
+        </React.Fragment>
+      ))}
     </>
   )
 }
