@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/forum') ||
     request.nextUrl.pathname.startsWith('/wiki')
 
-  if (!user && isProtectedRoute) {
+  if (!session && isProtectedRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('redirect', request.nextUrl.pathname)
