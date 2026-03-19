@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     // Character-only wiki stub (no party yet)
     if (body.characterOnly) {
-      const { characterName, ethnicity, religion, bio, slug } = body
+      const { characterName, ethnicity, religion, bio, slug, UserId } = body
 
       if (!characterName || !slug) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -38,6 +38,7 @@ ${bio ? `## Background\n\n${bio}` : '## Background\n\n*Character background to b
         content: characterContent,
         party_id: null,
         page_type: 'character',
+        last_edited_by: userId ?? null,
       }).select('id').single()
 
       if (error) {
