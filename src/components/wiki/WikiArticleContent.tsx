@@ -24,10 +24,19 @@ function preprocessWikiLinks(markdown: string): string {
   const parts = markdown.split(/(```[\s\S]*?```|`[^`]+`)/g)
   return parts
     .map((part, i) => {
-      if (i % 2 === 1) return part // code block/inline code — leave alone
+      if (i % 2 === 1) return part
       return part.replace(
         /\[\[([^\]]+)\]\]/g,
-        (_, name: string) => `[${name}](/wiki/${slugifyTitle(name)})`
+        (_, inner: string) => {
+          const [target, label] = inner.split('|').map((s) => s.trim())
+          if (target.startsWith('w:')) {
+            const article = target.slice(2)
+            const text = label ?? article
+            return `[${text}](https://en.wikipedia.org/wiki/${encodeURIComponent(article)})`
+          }
+          const text = label ?? target
+          return `[${text}](/wiki/${slugifyTitle(target)})`
+        }
       )
     })
     .join('')
