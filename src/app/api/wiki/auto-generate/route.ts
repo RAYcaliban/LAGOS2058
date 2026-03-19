@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     // Character-only wiki stub (no party yet)
     if (body.characterOnly) {
-      const { characterName, ethnicity, religion, bio, slug, UserId } = body
+      const { characterName, ethnicity, religion, bio, slug, userId } = body
 
       if (!characterName || !slug) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
