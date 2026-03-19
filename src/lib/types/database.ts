@@ -378,6 +378,7 @@ export type Database = {
           approved: boolean
           approved_by: string | null
           approved_revision_id: string | null
+          infobox_data?: Record<string, unknown> | null
         }
         Insert: {
           content?: string
@@ -392,6 +393,7 @@ export type Database = {
           approved?: boolean
           approved_by?: string | null
           approved_revision_id?: string | null
+          infobox_data?: Record<string, unknown> | null
         }
         Update: {
           content?: string
@@ -406,6 +408,7 @@ export type Database = {
           approved?: boolean
           approved_by?: string | null
           approved_revision_id?: string | null
+          infobox_data?: Record<string, unknown> | null
         }
         Relationships: [
           {
@@ -434,6 +437,7 @@ export type Database = {
           revision_number: number
           created_at: string
           edit_summary: string | null
+          infobox_data?: Record<string, unknown> | null
         }
         Insert: {
           id?: string
@@ -444,6 +448,7 @@ export type Database = {
           revision_number?: number
           created_at?: string
           edit_summary?: string | null
+          infobox_data?: Record<string, unknown> | null
         }
         Update: {
           id?: string
@@ -454,6 +459,7 @@ export type Database = {
           revision_number?: number
           created_at?: string
           edit_summary?: string | null
+          infobox_data?: Record<string, unknown> | null
         }
         Relationships: [
           {

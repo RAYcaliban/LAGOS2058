@@ -8,6 +8,7 @@ import { WikiCategoryFooter } from '@/components/wiki/WikiCategoryFooter'
 import { WikiApprovalBanner } from '@/components/wiki/WikiApprovalBanner'
 import { WikiBreadcrumbs } from '@/components/wiki/WikiBreadcrumbs'
 import type { WikiPageType, InfoboxData } from '@/lib/types/wiki'
+import { hasInfoboxColumn } from '@/lib/wiki/infobox-column'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -53,7 +54,8 @@ export default async function WikiArticlePage({ params, searchParams }: Props) {
   }
 
   // Build infobox data — use stored data or fallback for party pages
-  let infoboxData: InfoboxData | null = ((data as Record<string, unknown>).infobox_data as InfoboxData) ?? null
+  const infoboxColExists = await hasInfoboxColumn()
+  let infoboxData: InfoboxData | null = infoboxColExists ? (data.infobox_data as unknown as InfoboxData) ?? null : null
   if (!infoboxData && pageType === 'party' && party) {
     // Backward-compat: construct InfoboxData from joined party fields
     const fields: { key: string; label: string; value: string }[] = []

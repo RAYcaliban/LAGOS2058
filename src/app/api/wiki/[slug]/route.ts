@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { hasInfoboxColumn } from '@/lib/wiki/infobox-column'
 
 export async function GET(
   request: Request,
@@ -35,7 +36,7 @@ export async function GET(
     partyEthnicity: party?.ethnicity ?? null,
     partyReligion: party?.religion_display ?? null,
     pageType: data.page_type,
-    infoboxData: (data as Record<string, unknown>).infobox_data ?? null,
+    infoboxData: (await hasInfoboxColumn()) ? (data.infobox_data ?? null) : null,
     lastEditedBy: editor ? { id: editor.id, displayName: editor.display_name, avatarUrl: editor.avatar_url } : null,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
@@ -99,8 +100,7 @@ export async function PATCH(
       edited_by: user.id,
       revision_number: nextRevision,
       edit_summary: editSummary?.trim() || null,
-      ...(infoboxData ? { infobox_data: infoboxData } : {}),
-    } as never)
+    })
     .select('id')
     .single()
 
@@ -116,10 +116,6 @@ export async function PATCH(
     updated_at: new Date().toISOString(),
   }
 
-  if (infoboxData) {
-    updateFields.infobox_data = infoboxData
-  }
-
   // If was previously approved, mark as unapproved but keep the approved_revision_id
   if (page.approved) {
     updateFields.approved = false
@@ -132,6 +128,12 @@ export async function PATCH(
 
   if (updateError) {
     return NextResponse.json({ error: updateError.message }, { status: 500 })
+  }
+
+  // Persist infobox data if the column exists (post-migration)
+  if (infoboxData && await hasInfoboxColumn()) {
+    await admin.from('wiki_pages').update({ infobox_data: infoboxData }).eq('id', page.id)
+    await admin.from('wiki_revisions').update({ infobox_data: infoboxData }).eq('id', revision.id)
   }
 
   return NextResponse.json({ success: true, revisionId: revision.id })

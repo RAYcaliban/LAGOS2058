@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { slugifyTitle } from '@/lib/utils/slugify'
+import { hasInfoboxColumn } from '@/lib/wiki/infobox-column'
 
 const VALID_PAGE_TYPES = ['party', 'character', 'event', 'lore', 'general', 'organization', 'location', 'institution']
 
@@ -97,8 +98,7 @@ export async function POST(request: Request) {
       party_id: partyId || null,
       last_edited_by: user.id,
       approved: false,
-      ...(infoboxData ? { infobox_data: infoboxData } : {}),
-    } as never)
+    })
     .select('id, slug')
     .single()
 
@@ -112,15 +112,22 @@ export async function POST(request: Request) {
 
   // Create initial revision
   if (page) {
-    await admin.from('wiki_revisions').insert({
+    const { data: rev } = await admin.from('wiki_revisions').insert({
       wiki_page_id: page.id,
       title: title.trim(),
       content: articleContent,
       edited_by: user.id,
       edit_summary: editSummary?.trim() || 'Initial creation',
       revision_number: 1,
-      ...(infoboxData ? { infobox_data: infoboxData } : {}),
-    } as never)
+    }).select('id').single()
+
+    // Persist infobox data if the column exists (post-migration)
+    if (infoboxData && await hasInfoboxColumn()) {
+      await admin.from('wiki_pages').update({ infobox_data: infoboxData }).eq('id', page.id)
+      if (rev) {
+        await admin.from('wiki_revisions').update({ infobox_data: infoboxData }).eq('id', rev.id)
+      }
+    }
   }
 
   return NextResponse.json({ slug: page.slug })
