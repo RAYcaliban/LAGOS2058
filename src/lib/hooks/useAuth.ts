@@ -42,10 +42,10 @@ export function useAuth() {
   useEffect(() => {
     const supabase = supabaseRef.current
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       const currentUser = session?.user ?? null
       setUser(currentUser)
-      if (currentUser) fetchProfile(currentUser.id)
+      if (currentUser) await fetchProfile(currentUser.id)
       setLoading(false)
     })
 
