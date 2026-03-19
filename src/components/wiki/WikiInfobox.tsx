@@ -27,8 +27,13 @@ function renderSegment(text: string) {
       {parts.map((part, i) => {
         if (i % 2 === 1) {
           const [target, display] = part.includes('|') ? part.split('|', 2) : [part, part]
-          const slug = target.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-          return <Link key={i} href={`/wiki/${slug}`}>{display.trim()}</Link>
+          const trimmedTarget = target.trim()
+          if (trimmedTarget.startsWith('w:')) {
+          const article = trimmedTarget.slice(2)
+          return <a key={i} href={`https://en.wikipedia.org/wiki/${encodeURIComponent(article)}`} target="_blank" rel="noopener noreferrer">{(display ?? article).trim()}</a>
+  }
+  const slug = trimmedTarget.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+  return <Link key={i} href={`/wiki/${slug}`}>{display.trim()}</Link>
         }
         return part
       })}
