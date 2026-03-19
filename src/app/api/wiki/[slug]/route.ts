@@ -99,8 +99,8 @@ export async function PATCH(
       edited_by: user.id,
       revision_number: nextRevision,
       edit_summary: editSummary?.trim() || null,
-      infobox_data: infoboxData !== undefined ? infoboxData : null,
-    })
+      ...(infoboxData ? { infobox_data: infoboxData } : {}),
+    } as never)
     .select('id')
     .single()
 
@@ -116,7 +116,7 @@ export async function PATCH(
     updated_at: new Date().toISOString(),
   }
 
-  if (infoboxData !== undefined) {
+  if (infoboxData) {
     updateFields.infobox_data = infoboxData
   }
 

@@ -97,8 +97,8 @@ export async function POST(request: Request) {
       party_id: partyId || null,
       last_edited_by: user.id,
       approved: false,
-      infobox_data: infoboxData ?? null,
-    })
+      ...(infoboxData ? { infobox_data: infoboxData } : {}),
+    } as never)
     .select('id, slug')
     .single()
 
@@ -119,8 +119,8 @@ export async function POST(request: Request) {
       edited_by: user.id,
       edit_summary: editSummary?.trim() || 'Initial creation',
       revision_number: 1,
-      infobox_data: infoboxData ?? null,
-    })
+      ...(infoboxData ? { infobox_data: infoboxData } : {}),
+    } as never)
   }
 
   return NextResponse.json({ slug: page.slug })

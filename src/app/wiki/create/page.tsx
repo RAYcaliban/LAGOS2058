@@ -44,7 +44,7 @@ export default function WikiCreatePage() {
           title: title.trim(),
           content: content.trim() || undefined,
           pageType,
-          infoboxData,
+          ...(infoboxData ? { infoboxData } : {}),
         }),
       })
       const data = await res.json()

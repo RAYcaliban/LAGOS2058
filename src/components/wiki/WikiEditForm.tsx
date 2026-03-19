@@ -32,7 +32,7 @@ export function WikiEditForm({ slug, initialTitle, initialContent, initialInfobo
       const res = await fetch(`/api/wiki/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, infoboxData, editSummary: editSummary.trim() || undefined }),
+        body: JSON.stringify({ title, content, ...(infoboxData ? { infoboxData } : {}), editSummary: editSummary.trim() || undefined }),
       })
       if (!res.ok) {
         const data = await res.json()
