@@ -33,7 +33,18 @@ function preprocessWikiLinks(markdown: string): string {
             const article = target.slice(2)
             const text = label ?? article
             return `[${text}](https://en.wikipedia.org/wiki/${encodeURIComponent(article)})`
-          }
+}
+          
+          if (target.startsWith('c:')) {
+            const name = target.slice(2)
+            const text = label ?? name
+            return `[${text}](/wiki/character-${slugifyTitle(name)})`
+}
+          if (target.startsWith('p:')) {
+            const name = target.slice(2)
+            const text = label ?? name
+            return `[${text}](/wiki/party-${slugifyTitle(name)})`
+}
           const text = label ?? target
           return `[${text}](/wiki/${slugifyTitle(target)})`
         }
