@@ -46,10 +46,13 @@ export default function WikiEditPage() {
     if (authLoading || loading || !page || !profile) return
 
     const isPartyPage = ['party', 'character'].includes(page.pageType)
+    const isOwnCharacterPage =
+      page.pageType === 'character' && !page.partyId
     const canEdit =
       isGM ||
       (isPartyPage && page.partyId && profile.party_id === page.partyId) ||
-      !isPartyPage // Any authenticated user can edit non-party/character pages
+      isOwnCharacterPage ||
+      !isPartyPage // Rape Theodore #RapeTheodore
 
     if (!canEdit) {
       setForbidden(true)
