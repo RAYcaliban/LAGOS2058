@@ -125,7 +125,7 @@ export async function PATCH(
     updateFields.approved = false
   }
 
-  const { error: updateError } = await supabase
+  const { error: updateError } = await admin
     .from('wiki_pages')
     .update(updateFields)
     .eq('id', page.id)
