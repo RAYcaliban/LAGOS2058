@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { ImpersonateBanner } from './ImpersonateBanner'
@@ -47,14 +47,14 @@ export function ImpersonateView({ gameState }: ImpersonateViewProps) {
   } | null>(null)
   const [actions, setActions] = useState<Action[]>([])
 
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   // Load parties
   useEffect(() => {
-    supabase.from('parties').select('id, name, full_name, color, leader_name, logo_url').then(({ data }) => {
+    supabaseRef.current.from('parties').select('id, name, full_name, color, leader_name, logo_url').then(({ data }) => {
       setParties(data ?? [])
     })
-  }, [supabase])
+  }, [])
 
   const fetchData = useCallback(async () => {
     if (!selectedId) {
@@ -64,7 +64,7 @@ export function ImpersonateView({ gameState }: ImpersonateViewProps) {
     }
 
     // Fetch party state
-    const { data: ps } = await supabase
+    const { data: ps } = await supabaseRef.current
       .from('party_state')
       .select('pc, cohesion, exposure, momentum, vote_share, seats, awareness')
       .eq('party_id', selectedId)
@@ -74,14 +74,14 @@ export function ImpersonateView({ gameState }: ImpersonateViewProps) {
     setPartyState(ps)
 
     // Fetch actions for this turn
-    const { data: acts } = await supabase
+    const { data: acts } = await supabaseRef.current
       .from('action_submissions')
       .select('id, action_type, pc_cost, status, description, created_at')
       .eq('party_id', selectedId)
       .eq('turn', gameState.turn)
       .order('created_at')
     setActions(acts ?? [])
-  }, [selectedId, gameState.turn, supabase])
+  }, [selectedId, gameState.turn])
 
   useEffect(() => { fetchData() }, [fetchData])
 
