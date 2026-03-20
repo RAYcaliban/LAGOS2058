@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface PartyState {
@@ -23,7 +23,7 @@ interface PartyState {
 export function usePartyState(partyId: string | null | undefined) {
   const [partyState, setPartyState] = useState<PartyState | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   useEffect(() => {
     if (!partyId) {
@@ -32,7 +32,7 @@ export function usePartyState(partyId: string | null | undefined) {
     }
 
     async function fetch() {
-      const { data } = await supabase
+      const { data } = await supabaseRef.current
         .from('party_state')
         .select('*')
         .eq('party_id', partyId!)
@@ -43,7 +43,7 @@ export function usePartyState(partyId: string | null | undefined) {
       setLoading(false)
     }
     fetch()
-  }, [partyId, supabase])
+  }, [partyId])
 
   return { partyState, loading }
 }
