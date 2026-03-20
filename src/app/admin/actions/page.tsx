@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAdminFetch } from '@/lib/hooks/useAdminFetch'
 import { AeroPanel } from '@/components/ui/AeroPanel'
 import { AeroSelect } from '@/components/ui/AeroSelect'
@@ -46,14 +46,13 @@ export default function AdminActionsPage() {
   const { data: gs } = useAdminFetch<GameState>('/api/admin/game-state')
   const { data: partiesData } = useAdminFetch<{ parties: Party[] }>('/api/admin/parties')
 
-  const [turn, setTurn] = useState('')
+  const [turnOverride, setTurnOverride] = useState<string | null>(null)
   const [partyId, setPartyId] = useState('')
   const [status, setStatus] = useState('')
 
-  // Set default turn when game state loads
-  useEffect(() => {
-    if (gs && !turn) setTurn(String(gs.turn))
-  }, [gs, turn])
+  // Derive turn from game state unless user has manually set it
+  const turn = turnOverride ?? (gs ? String(gs.turn) : '')
+  const setTurn = (v: string) => setTurnOverride(v)
 
   const params = new URLSearchParams()
   if (turn) params.set('turn', turn)

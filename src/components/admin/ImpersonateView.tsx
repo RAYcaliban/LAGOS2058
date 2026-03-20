@@ -63,6 +63,8 @@ export function ImpersonateView({ gameState }: ImpersonateViewProps) {
       return
     }
 
+    const supabase = supabaseRef.current
+
     // Fetch party state
     const { data: ps } = await supabaseRef.current
       .from('party_state')

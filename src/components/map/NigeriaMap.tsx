@@ -156,8 +156,8 @@ export default function NigeriaMap({
 
   useEffect(() => { fetchGeoData().then((d) => { setData(d); setLoading(false) }) }, [])
 
-  // Keep selection ref in sync
-  useEffect(() => { selectionRef.current = selection }, [selection])
+  // Keep selection ref in sync (assigned during render — no effect needed)
+  selectionRef.current = selection
 
   // Re-style LGA layers when mode changes
   useEffect(() => {

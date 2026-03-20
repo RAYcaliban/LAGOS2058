@@ -355,6 +355,7 @@ export default function AboutPage() {
   const [padX, setPadX] = useState(400)
 
   const [active, setActive] = useState(0)
+  const activeRef = useRef(0)
 
   // Set padX to half the container width so every dot can be centered under the pointer
   useEffect(() => {
@@ -373,6 +374,7 @@ export default function AboutPage() {
 
   const goTo = useCallback((idx: number) => {
     setActive(idx)
+    activeRef.current = idx
     const el = scrollRef.current
     if (!el) return
     isProgrammatic.current = true
@@ -387,6 +389,7 @@ export default function AboutPage() {
     const centerX = el.scrollLeft + el.clientWidth / 2
     const idx = Math.max(0, Math.min(FLAT.length - 1, Math.round((centerX - padXRef.current) / DOT_SPACING)))
     setActive(idx)
+    activeRef.current = idx
 
     if (!isProgrammatic.current) {
       if (snapRef.current) clearTimeout(snapRef.current)
@@ -405,12 +408,13 @@ export default function AboutPage() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') prev()
-      if (e.key === 'ArrowRight') next()
+      const cur = activeRef.current
+      if (e.key === 'ArrowLeft' && cur > 0) goTo(cur - 1)
+      if (e.key === 'ArrowRight' && cur < FLAT.length - 1) goTo(cur + 1)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  })
+  }, [goTo])
 
   const evt = FLAT[active]
 

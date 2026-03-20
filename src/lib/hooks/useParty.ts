@@ -51,12 +51,8 @@ export function useParty(partyId: string | null | undefined, userId: string | nu
     setLoading(false)
   }, [partyId])
 
-  // Show loading spinner when partyId changes (e.g. after joining a party)
   useEffect(() => {
     setLoading(true)
-  }, [partyId])
-
-  useEffect(() => {
     refetch()
   }, [refetch])
 

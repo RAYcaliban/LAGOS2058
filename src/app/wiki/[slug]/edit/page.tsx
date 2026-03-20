@@ -25,8 +25,6 @@ export default function WikiEditPage() {
   const router = useRouter()
   const [page, setPage] = useState<PageData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [forbidden, setForbidden] = useState(false)
-
   useEffect(() => {
     async function load() {
       const res = await fetch(`/api/wiki/${slug}`)
@@ -41,23 +39,18 @@ export default function WikiEditPage() {
     load()
   }, [slug, router])
 
-  // Permission check after data loads
-  useEffect(() => {
-    if (authLoading || loading || !page || !profile) return
-
+  // Derive permission check from current state — no effect needed
+  const forbidden = (() => {
+    if (authLoading || loading || !page || !profile) return false
     const isPartyPage = ['party', 'character'].includes(page.pageType)
-    const isOwnCharacterPage =
-      page.pageType === 'character' && !page.partyId
+    const isOwnCharacterPage = page.pageType === 'character' && !page.partyId
     const canEdit =
       isGM ||
       (isPartyPage && page.partyId && profile.party_id === page.partyId) ||
       isOwnCharacterPage ||
-      !isPartyPage // Rape Theodore #RapeTheodore
-
-    if (!canEdit) {
-      setForbidden(true)
-    }
-  }, [authLoading, loading, page, profile, isGM])
+      !isPartyPage
+    return !canEdit
+  })()
 
   if (loading || authLoading) {
     return <p style={{ color: '#666' }}>Loading...</p>
