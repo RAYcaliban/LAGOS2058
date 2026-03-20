@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface ActionSubmission {
@@ -23,7 +23,7 @@ interface ActionSubmission {
 export function useActions(partyId: string | null | undefined, turn: number | null | undefined) {
   const [actions, setActions] = useState<ActionSubmission[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   const fetchActions = useCallback(async () => {
     if (!partyId || !turn) {
@@ -31,7 +31,7 @@ export function useActions(partyId: string | null | undefined, turn: number | nu
       return
     }
 
-    const { data } = await supabase
+    const { data } = await supabaseRef.current
       .from('action_submissions')
       .select('*')
       .eq('party_id', partyId)
@@ -40,7 +40,7 @@ export function useActions(partyId: string | null | undefined, turn: number | nu
 
     setActions((data ?? []) as unknown as ActionSubmission[])
     setLoading(false)
-  }, [partyId, turn, supabase])
+  }, [partyId, turn])
 
   useEffect(() => {
     fetchActions()
