@@ -636,6 +636,11 @@
   }
 
   /* Wiki article content — markdown overrides */
+  .wiki-content img {
+    max-width: 100%;
+    height: auto;
+}
+  
   .wiki-content h2 {
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.35rem;
