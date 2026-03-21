@@ -66,10 +66,12 @@ export function useAuth() {
   }, [fetchProfile])
 
   const signOut = useCallback(async () => {
-    await supabaseRef.current.auth.signOut()
-    setUser(null)
-    setProfile(null)
-  }, [])
+  await supabaseRef.current.auth.signOut()
+  setUser(null)
+  setProfile(null)
+  window.location.href = '/login'
+}, []) 
+
 
   return {
     user,
