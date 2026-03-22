@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AeroButton } from '@/components/ui/AeroButton'
 import { AeroSelect } from '@/components/ui/AeroSelect'
 import { ConfirmDialog } from './ConfirmDialog'
@@ -30,6 +30,12 @@ const PHASES = [
 export function TurnControls({ gameState, onUpdate, onAdvanceTurn, onInitPartyStates }: TurnControlsProps) {
   const [loading, setLoading] = useState<string | null>(null)
   const [confirmAction, setConfirmAction] = useState<'advance' | 'init' | null>(null)
+
+  // Local deadline state — only commits on blur or Enter
+  const [localDeadline, setLocalDeadline] = useState(gameState.deadline?.slice(0, 16) ?? '')
+  useEffect(() => {
+    setLocalDeadline(gameState.deadline?.slice(0, 16) ?? '')
+  }, [gameState.deadline])
 
   async function handlePhaseChange(phase: string) {
     setLoading('phase')
@@ -107,12 +113,14 @@ export function TurnControls({ gameState, onUpdate, onAdvanceTurn, onInitPartySt
         {/* Deadline */}
         <div className="sm:col-span-2">
           <label className="block text-xs uppercase tracking-widest text-text-secondary mb-1">
-            Deadline
+            Deadline (commits on blur or Enter)
           </label>
           <input
             type="datetime-local"
-            value={gameState.deadline?.slice(0, 16) ?? ''}
-            onChange={(e) => handleDeadlineChange(e.target.value)}
+            value={localDeadline}
+            onChange={(e) => setLocalDeadline(e.target.value)}
+            onBlur={() => { if (localDeadline !== (gameState.deadline?.slice(0, 16) ?? '')) handleDeadlineChange(localDeadline) }}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleDeadlineChange(localDeadline) }}
             className="aero-input w-full"
           />
           {loading === 'deadline' && <p className="text-xs text-aero-500 mt-1">Updating...</p>}
