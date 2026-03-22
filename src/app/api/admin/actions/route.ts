@@ -30,7 +30,7 @@ export async function PATCH(request: Request) {
   const auth = await verifyGMAccess()
   if (auth.error) return auth.error
 
-  const { id, status, quality_score, gm_notes } = await request.json()
+  const { id, status, quality_score, gm_notes, description } = await request.json()
   if (!id) return NextResponse.json({ error: 'Action id required' }, { status: 400 })
 
   const admin = createAdminClient()
@@ -38,8 +38,22 @@ export async function PATCH(request: Request) {
   if (status !== undefined) updates.status = status
   if (quality_score !== undefined) updates.quality_score = quality_score
   if (gm_notes !== undefined) updates.gm_notes = gm_notes
+  if (description !== undefined) updates.description = description
 
   const { error } = await admin.from('action_submissions').update(updates).eq('id', id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
+}
+
+export async function DELETE(request: Request) {
+  const auth = await verifyGMAccess()
+  if (auth.error) return auth.error
+
+  const { id } = await request.json()
+  if (!id) return NextResponse.json({ error: 'Action id required' }, { status: 400 })
+
+  const admin = createAdminClient()
+  const { error } = await admin.from('action_submissions').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 }

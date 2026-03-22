@@ -11,6 +11,8 @@ interface StatsGridProps {
     seats: number
     awareness: number
   } | null
+  /** Election results only visible to players when admin has revealed them. */
+  resultsReleased?: boolean
 }
 
 function StatCard({ label, value, subtext, color }: {
@@ -44,7 +46,7 @@ function getMomentumArrow(momentum: number): string {
   return '\u2194' // ↔
 }
 
-export function StatsGrid({ partyState }: StatsGridProps) {
+export function StatsGrid({ partyState, resultsReleased }: StatsGridProps) {
   if (!partyState) {
     return (
       <AeroPanel>
@@ -85,11 +87,13 @@ export function StatsGrid({ partyState }: StatsGridProps) {
         />
         <StatCard
           label="Vote Share"
-          value={`${(vote_share * 100).toFixed(1)}%`}
+          value={resultsReleased ? `${(vote_share * 100).toFixed(1)}%` : 'TBD'}
+          color={!resultsReleased ? '#6b7280' : undefined}
         />
         <StatCard
           label="Seats"
-          value={`${seats}/622`}
+          value={resultsReleased ? `${seats}/622` : 'TBD'}
+          color={!resultsReleased ? '#6b7280' : undefined}
         />
         <div className="text-center space-y-1">
           <div className="stat-label">Awareness</div>

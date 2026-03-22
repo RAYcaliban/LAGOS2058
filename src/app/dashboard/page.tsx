@@ -60,6 +60,14 @@ export default async function DashboardPage() {
     .limit(1)
     .single()
 
+  // Check if election results have been revealed by admin
+  const { data: resultsConfig } = await supabase
+    .from('game_config')
+    .select('value')
+    .eq('key', 'results_released')
+    .maybeSingle()
+  const resultsReleased = resultsConfig?.value === true
+
   // Get party state for latest turn
   const currentTurn = gameState?.turn ?? 1
   const { data: partyState } = await supabase
@@ -109,7 +117,7 @@ export default async function DashboardPage() {
         submissionOpen={gameState?.submission_open ?? false}
       />
 
-      <StatsGrid partyState={partyState} />
+      <StatsGrid partyState={partyState} resultsReleased={resultsReleased} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <EPOScoresTable epoScores={(partyState?.epo_scores ?? {}) as Record<string, Record<string, number>>} />

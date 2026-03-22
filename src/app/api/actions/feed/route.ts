@@ -20,10 +20,22 @@ export async function GET(request: NextRequest) {
   const turn = searchParams.get('turn')
   const limit = Math.min(Number(searchParams.get('limit') ?? 50), 100)
 
+  // Only show 'processed' actions (with quality scores) once results are released
+  const { data: resultsConfig } = await supabase
+    .from('game_config')
+    .select('value')
+    .eq('key', 'results_released')
+    .maybeSingle()
+  const resultsReleased = resultsConfig?.value === true
+
+  const visibleStatuses = resultsReleased
+    ? ['submitted', 'processed']
+    : ['submitted']
+
   let query = supabase
     .from('action_submissions')
     .select('id, action_type, turn, description, status, quality_score, party_id, parties(name, full_name, color)')
-    .in('status', ['submitted', 'processed'])
+    .in('status', visibleStatuses)
     .order('created_at', { ascending: false })
     .limit(limit)
 

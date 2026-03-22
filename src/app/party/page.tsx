@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useParty } from '@/lib/hooks/useParty'
 import { AuthGuard } from '@/components/auth/AuthGuard'
@@ -15,6 +15,11 @@ function PartyHubContent() {
   const { user, profile, refetchProfile } = useAuth()
   const { party, members, loading, isOwner, refetch } = useParty(profile?.party_id, user?.id)
   const [tab, setTab] = useState<'browse' | 'create'>('browse')
+
+  const onJoinedParty = useCallback(() => {
+    void refetchProfile()
+    void refetch()
+  }, [refetchProfile, refetch])
 
   if (loading) {
     return (
@@ -98,7 +103,7 @@ function PartyHubContent() {
           </div>
 
           {tab === 'browse' ? (
-            <PartyBrowser onJoined={refetch} />
+            <PartyBrowser onJoined={onJoinedParty} />
           ) : (
             <CreatePartyForm />
           )}
