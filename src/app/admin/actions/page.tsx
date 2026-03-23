@@ -84,6 +84,15 @@ export default function AdminActionsPage() {
     refetch()
   }
 
+  async function handleDelete(id: string) {
+    await fetch('/api/admin/actions', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    refetch()
+  }
+
   async function handleExport() {
     const res = await fetch(`/api/actions/export?turn=${turn}`)
     const data = await res.json()
@@ -150,6 +159,7 @@ export default function AdminActionsPage() {
           actions={actionsData?.actions ?? []}
           onScore={handleScore}
           onBulkApprove={handleBulkApprove}
+          onDelete={handleDelete}
         />
       </AeroPanel>
     </div>

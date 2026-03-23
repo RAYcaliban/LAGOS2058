@@ -27,11 +27,13 @@ interface ActionReviewTableProps {
   actions: Action[]
   onScore: (id: string, fields: { status?: string; quality_score?: number; gm_notes?: string }) => Promise<void>
   onBulkApprove: (ids: string[]) => Promise<void>
+  onDelete?: (id: string) => Promise<void>
 }
 
-export function ActionReviewTable({ actions, onScore, onBulkApprove }: ActionReviewTableProps) {
+export function ActionReviewTable({ actions, onScore, onBulkApprove, onDelete }: ActionReviewTableProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [bulkLoading, setBulkLoading] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   // Actions that have been scored but not yet approved
   const scoredNotApproved = actions.filter(
@@ -108,6 +110,24 @@ export function ActionReviewTable({ actions, onScore, onBulkApprove }: ActionRev
                           onScore={(fields) => onScore(action.id, fields)}
                         />
                       </div>
+                      {onDelete && (
+                        <div className="mt-3 pt-3 border-t border-aero-900/20 flex justify-end">
+                          <AeroButton
+                            variant="ghost"
+                            onClick={async (e) => {
+                              e.stopPropagation()
+                              if (!confirm(`Delete this ${action.action_type} action from ${action.parties?.name ?? 'unknown'}?`)) return
+                              setDeletingId(action.id)
+                              await onDelete(action.id)
+                              setDeletingId(null)
+                              setExpandedId(null)
+                            }}
+                            loading={deletingId === action.id}
+                          >
+                            <span className="text-danger">Delete Action</span>
+                          </AeroButton>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 )}
