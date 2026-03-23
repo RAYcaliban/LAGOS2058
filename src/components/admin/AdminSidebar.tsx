@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/admin/feed', label: 'Feed', icon: '⊜' },
   { href: '/admin/results', label: 'Results', icon: '▤' },
   { href: '/admin/engine', label: 'Engine', icon: '⊞' },
+  { href: '/admin/sandbox', label: 'Sandbox', icon: '⬢' },
   { href: '/admin/announcements', label: 'Announcements', icon: '◆' },
   { href: '/admin/wiki', label: 'Wiki', icon: '◇' },
   { href: '/admin/config', label: 'Config', icon: '⚙' },

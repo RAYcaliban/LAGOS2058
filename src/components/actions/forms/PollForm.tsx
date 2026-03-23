@@ -1,7 +1,9 @@
 'use client'
 
 import { AeroSelect } from '@/components/ui/AeroSelect'
+import { AZSelector } from '@/components/actions/fields/AZSelector'
 import { IssueDimensionSelector } from '@/components/actions/fields/IssueDimensionSelector'
+import { ZONES } from '@/lib/constants/zones'
 
 interface ActionFormProps {
   params: Record<string, any>
@@ -24,26 +26,39 @@ const POLL_TIER_OPTIONS = [
 
 const TIER_MAX_DIMENSIONS: Record<number, number> = { 1: 2, 2: 4, 3: 6 }
 
+// Flat list of all states with their AZ for the state selector
+const STATE_OPTIONS = ZONES.flatMap((z) =>
+  z.states.map((s) => ({ value: s, label: `${s} (${z.key})` }))
+)
+
 export function PollForm({
   params,
   onParamsChange,
+  targetAzs,
+  onTargetAzsChange,
 }: ActionFormProps) {
   const tier = Number(params.poll_tier ?? 1)
   const maxDimensions = TIER_MAX_DIMENSIONS[tier] ?? tier * 2
   const currentDimensions = (params.issue_dimensions ?? []) as number[]
+  const selectedState = (params.poll_state as string) ?? ''
 
   function handleTierChange(newTier: number) {
     const newMax = TIER_MAX_DIMENSIONS[newTier] ?? newTier * 2
     const trimmed = currentDimensions.length > newMax
       ? currentDimensions.slice(0, newMax)
       : currentDimensions
-    onParamsChange({ ...params, poll_tier: newTier, issue_dimensions: trimmed })
+    const next: Record<string, unknown> = { ...params, poll_tier: newTier, issue_dimensions: trimmed }
+    // Clear scope selections when tier changes
+    if (newTier !== 2) onTargetAzsChange([])
+    if (newTier !== 3) delete next.poll_state
+    onParamsChange(next)
   }
 
   return (
     <div className="space-y-4">
       <div className="rounded border border-aero-500/20 bg-aero-500/5 px-3 py-2 text-xs text-text-secondary">
-        No language or targeting needed. Tier 1 allows 2 issue dimensions, Tier 2 allows 4, Tier 3 allows 6. Scroll down to see all 28 dimensions.
+        Tier 1 = national snapshot. Tier 2 = pick a zone. Tier 3 = pick a state.
+        Dimensions allowed: Tier 1 → 2, Tier 2 → 4, Tier 3 → 6.
       </div>
 
       <AeroSelect
@@ -53,6 +68,27 @@ export function PollForm({
         options={POLL_TIER_OPTIONS}
         placeholder="Select poll tier"
       />
+
+      {/* Tier 2: Zone selector */}
+      {tier === 2 && (
+        <AZSelector
+          value={targetAzs}
+          onChange={onTargetAzsChange}
+          multi={false}
+          label="Poll Zone"
+        />
+      )}
+
+      {/* Tier 3: State selector */}
+      {tier === 3 && (
+        <AeroSelect
+          label="Poll State"
+          value={selectedState}
+          onChange={(e) => onParamsChange({ ...params, poll_state: e.target.value })}
+          options={STATE_OPTIONS}
+          placeholder="Select a state..."
+        />
+      )}
 
       <IssueDimensionSelector
         value={currentDimensions}
