@@ -60,6 +60,20 @@ export function EPOEngagementForm({
         label="Target Zone"
       />
 
+      <AeroSelect
+        label="Score Change (1–5)"
+        value={String(params.score_change ?? '')}
+        onChange={(e) => onParamsChange({ ...params, score_change: Number(e.target.value) })}
+        options={[
+          { value: '1', label: '1' },
+          { value: '2', label: '2' },
+          { value: '3', label: '3' },
+          { value: '4', label: '4 (+1 PC)' },
+          { value: '5', label: '5 (+1 PC)' },
+        ]}
+        placeholder="Select score change"
+      />
+
       <DescriptionEditor
         value={description}
         onChange={onDescriptionChange}
