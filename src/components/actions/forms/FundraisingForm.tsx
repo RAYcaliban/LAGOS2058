@@ -27,7 +27,7 @@ const SOURCE_INFO: Record<string, string> = {
   diaspora: 'Yields ~4 PC. No significant side effects.',
   business_elite: 'Yields ~5 PC. Increases exposure risk.',
   grassroots: 'Yields ~3 PC. Turnout bonus in targeted areas.',
-  membership: 'Yields 2-4 PC, scales with party cohesion.',
+  membership: 'Yields 2-5 PC, scales with party cohesion.',
 }
 
 export function FundraisingForm({
