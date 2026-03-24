@@ -20,7 +20,7 @@ interface ActionFormProps {
 
 const MEDIUM_OPTIONS = [
   { value: 'radio', label: 'Radio' },
-  { value: 'tv', label: 'TV' },
+  { value: 'tv', label: 'TV (+1 PC)' },
   { value: 'internet', label: 'Internet' },
 ]
 
