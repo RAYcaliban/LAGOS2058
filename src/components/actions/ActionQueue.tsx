@@ -42,9 +42,9 @@ export function ActionQueue({ actions, totalPCSpent, pcAvailable, submissionOpen
   }
 
   async function deleteAction(id: string) {
-    const supabase = createClient()
-    await supabase.from('action_submissions').delete().eq('id', id)
-    onRefetch()
+  const supabase = createClient()
+  const { error } = await supabase.from('action_submissions').delete().eq('id', id)
+  if (!error) onRefetch()
   }
 
   async function submitAll() {
