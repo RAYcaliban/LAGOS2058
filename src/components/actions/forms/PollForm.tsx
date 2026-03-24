@@ -67,27 +67,24 @@ export function PollForm({
         options={POLL_TIER_OPTIONS}
         placeholder="Select poll tier"
       />
-
-      {/* Tier 2: Zone selector */}
+      
+      {tier === 1 && (
+      <AeroSelect
+    label="Poll State"
+    value={selectedState}
+    onChange={(e) => onParamsChange({ ...params, poll_state: e.target.value })}
+    options={STATE_OPTIONS}
+    placeholder="Select a state..."
+  />
+)}
       {tier === 2 && (
-        <AZSelector
-          value={targetAzs}
-          onChange={onTargetAzsChange}
-          multi={false}
-          label="Poll Zone"
-        />
-      )}
-
-      {/* Tier 3: State selector */}
-      {tier === 3 && (
-        <AeroSelect
-          label="Poll State"
-          value={selectedState}
-          onChange={(e) => onParamsChange({ ...params, poll_state: e.target.value })}
-          options={STATE_OPTIONS}
-          placeholder="Select a state..."
-        />
-      )}
+      <AZSelector
+    value={targetAzs}
+    onChange={onTargetAzsChange}
+    multi={false}
+    label="Poll Zone"
+  />
+)}
 
       <IssueDimensionSelector
         value={currentDimensions}
