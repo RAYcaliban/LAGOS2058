@@ -124,13 +124,10 @@ export function computeActionCost(
     }
 
     case 'epo_engagement': {
-      // score_change > 3.0 adds +1
-      const scoreChange = Number(params.score_change ?? 0);
-      if (scoreChange > 3.0) {
-        cost += 1;
-      }
-      break;
-    }
+  const scoreChange = Number(params.score_change ?? 0);
+  cost += Math.max(0, scoreChange - 3);
+  break;
+}
 
     case 'poll': {
       // poll_tier param overrides base cost (1-3)
