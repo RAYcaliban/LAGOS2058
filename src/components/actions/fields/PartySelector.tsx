@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { AeroSelect } from '@/components/ui/AeroSelect'
 
@@ -15,10 +15,10 @@ interface PartySelectorProps {
 export function PartySelector({ value, onChange, excludePartyId, label = 'Target Party', error }: PartySelectorProps) {
   const [parties, setParties] = useState<{ value: string; label: string }[]>([])
 
+  const supabaseRef = useRef(createClient())
   useEffect(() => {
     async function load() {
-      const supabase = createClient()
-      const { data } = await supabase.from('parties').select('id, name, full_name')
+      const { data } = await supabaseRef.current.from('parties').select('id, name, full_name')
       if (data) {
         setParties(
           data
