@@ -83,8 +83,8 @@ export const ACTION_TARGET_SCOPE: Record<ActionType, TargetScope> = {
   patronage: 'lga',
   opposition_research: 'none',
   media: 'none',
-  epo_engagement: 'lga',
-  crisis_response: 'lga',
+  epo_engagement: 'none',
+  crisis_response: 'none',
   fundraising: 'none',
   poll: 'none',
   epo_intelligence: 'none',
@@ -95,7 +95,7 @@ export const ACTION_TARGET_SCOPE: Record<ActionType, TargetScope> = {
 // ---------------------------------------------------------------------------
 
 export const ENDORSER_TARGET_SCOPE: Record<EndorserType, TargetScope> = {
-  traditional_ruler: 'lga',
+  traditional_ruler: 'regional',
   religious_leader: 'regional',
   epo_leader: 'regional',
   celebrity: 'none',
