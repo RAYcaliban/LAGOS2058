@@ -122,7 +122,8 @@ export function ActionBuilder({ partyId, turn, pcAvailable, totalPCSpent, onActi
 
   async function handleSaveDraft() {
     if (!actionType) return
-    if (description.length < 20) {
+    // Polls have no player-facing description field — skip the check
+    if (actionType !== 'poll' && description.length < 20) {
       setError('Description must be at least 20 characters')
       return
     }
