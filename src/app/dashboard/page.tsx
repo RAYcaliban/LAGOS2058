@@ -68,6 +68,14 @@ export default async function DashboardPage() {
     .maybeSingle()
   const resultsReleased = resultsConfig?.value === true
 
+  // #PLEASE FIX — polls_visible toggle: GM delivers poll results manually for now
+  const { data: pollsConfig } = await supabase
+    .from('game_config')
+    .select('value')
+    .eq('key', 'polls_visible')
+    .maybeSingle()
+  const pollsVisible = pollsConfig?.value === true
+
   // Get party state for latest turn
   const currentTurn = gameState?.turn ?? 1
   const { data: partyState } = await supabase
@@ -121,7 +129,7 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <EPOScoresTable epoScores={(partyState?.epo_scores ?? {}) as Record<string, Record<string, number>>} />
-        <PollResults pollResults={partyState?.poll_results as Record<string, unknown>[] | null} />
+        {pollsVisible && <PollResults pollResults={partyState?.poll_results as Record<string, unknown>[] | null} />}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
