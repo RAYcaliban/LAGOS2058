@@ -19,12 +19,12 @@ interface ActionFormProps {
 }
 
 const POLL_TIER_OPTIONS = [
-  { value: '1', label: 'Tier 1 (1 PC) — National snapshot' },
+  { value: '1', label: 'Tier 1 (1 PC) — State-level data' },
   { value: '2', label: 'Tier 2 (2 PC) — Zonal breakdown' },
-  { value: '3', label: 'Tier 3 (3 PC) — State-level data' },
+  { value: '3', label: 'Tier 3 (3 PC) — National snapshot' },
 ]
 
-const TIER_MAX_DIMENSIONS: Record<number, number> = { 1: 2, 2: 4, 3: 6 }
+const TIER_MAX_DIMENSIONS: Record<number, number> = { 1: 8, 2: 4, 3: 2 }
 
 // Flat list of all states with their AZ for the state selector
 const STATE_OPTIONS = ZONES.flatMap((z) =>
@@ -57,8 +57,7 @@ export function PollForm({
   return (
     <div className="space-y-4">
       <div className="rounded border border-aero-500/20 bg-aero-500/5 px-3 py-2 text-xs text-text-secondary">
-        Tier 1 = national snapshot. Tier 2 = pick a zone. Tier 3 = pick a state.
-        Dimensions allowed: Tier 1 → 2, Tier 2 → 4, Tier 3 → 6.
+        Tier 1 = pick a state (8 issues). Tier 2 = pick a zone (4 issues). Tier 3 = national snapshot (2 issues).
       </div>
 
       <AeroSelect
