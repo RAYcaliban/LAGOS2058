@@ -169,13 +169,13 @@ export const PC_INCOME_BASE = 7;
 export const PC_INCOME_PER_EXTRA_MEMBER = 2;
 
 /** Maximum PC income a party can earn per turn regardless of size. */
-export const PC_INCOME_CAP = 21;
+export const PC_INCOME_CAP = 27;
 
 /** Maximum PC a party may accumulate (hoarding cap). */
 export const PC_HOARDING_CAP = 68;
 
 /** Calculate PC income for a party based on member count. */
 export function calcPartyIncome(memberCount: number): number {
-  const raw = PC_INCOME_BASE + Math.max(0, memberCount - 1) * PC_INCOME_PER_EXTRA_MEMBER;
-  return Math.min(raw, PC_INCOME_CAP);
+  const raw = PC_INCOME_BASE + memberCount * PC_INCOME_PER_EXTRA_MEMBER
+  return Math.min(raw, PC_INCOME_CAP)
 }
