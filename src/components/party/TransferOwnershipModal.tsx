@@ -46,10 +46,14 @@ export function TransferOwnershipModal({
       .update({ owner_id: selectedId, leader_name: newLeaderName })
       .eq('id', party.id)
 
-    if (!error) {
-      onTransferred()
-      onClose()
+    if (error) {
+      console.error('Transfer failed:', error.message)
+      setLoading(false)
+      return
     }
+
+    onTransferred()
+    onClose()
     setLoading(false)
   }
 
